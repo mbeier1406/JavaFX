@@ -1,0 +1,19 @@
+
+.root {
+	-fx-background-color: transparent;
+}
+
+.button {
+	-fx-background-color: transparent;
+    -fx-background-size: 64.0 64.0;
+	-fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.button1 {
+    -fx-background-image: url("../Images/github.png");
+}
+
+.button2 {
+    -fx-background-image: url("../Images/exit.png");
+}
