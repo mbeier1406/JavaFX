@@ -22,8 +22,8 @@ import javafx.stage.StageStyle;
  */
 public class Main extends Application {
 
-	/** */
-	Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+	/** Bildschirmdefinition */
+	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
 	/** Startmethode erzeugt das Fenster mit den Buttons */
 	@Override
