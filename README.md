@@ -6,7 +6,7 @@
 
 ***
 
-#Voraussetzung
+# Voraussetzung
 
 * Die Beispiele sind (teilweise) mit <u>JDK &gt; Version 10</u> erstellt; JavaFX ist nicht mehr Bestandteil des JDK.
 * Entwicklung mit Eclipse, über den Marketplace e(fx)clipse installieren (direkt JavaFX-Projekte in Eclipse erstellen).
@@ -19,6 +19,6 @@
 * <b>Hinweis</b>: für Programme mit <u>JDK &lt; Version 11</u> muss zusätzlich das <i>JavaFX SDK</i> dem Classpath hinzugefügt werden!
 
 
-#JavaFX Beispiele
+# JavaFX Beispiele
 
-* Beipspiel <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/HBox.html">HBox</a>: Elemente in einer Reihe anordnen
+* Beipspiel <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/HBox.html">HBox</a>: Elemente in einer Reihe anordnen in <code>com.github.mbeier1406.javafx.hbox.Main.main(String[])</code>
