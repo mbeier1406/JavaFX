@@ -21,4 +21,7 @@
 
 # JavaFX Beispiele
 
+Beim Erzeugen eines <i>executable JAR</i> in Eclipse über <code>File -> Export -> Java Runnable JAR file</code> werden die VM-Parameter nicht berücksichtigt,
+d. h. man benötigt ein Shellscript, in dem die Parameter beim Java-Aufruf mitgegeben werden.
+
 * Beipspiel <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/HBox.html">HBox</a>: Elemente in einer Reihe anordnen in <code>com.github.mbeier1406.javafx.hbox.Main.main(String[])</code>
