@@ -21,7 +21,7 @@ public class Main extends Application {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>Erzugt eine Anwendung, die auf einige Events reagiert und diese
+	 * <p>Erzeugt eine Anwendung, die auf einige Events reagiert und diese
 	 * auf der Console loggt.</p>
 	 */
 	@Override
