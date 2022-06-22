@@ -11,10 +11,11 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Demonstriert die Verwendung von 
+ * Demonstriert die Verwendung von Listenern und Binding.
  * <p>
  * Ein einfaches Beispiel in dem die Position und die Größe eines Objektes von der Größe der
  * Szene abhängig ist und dynamisch neu "berechnet" wird.
@@ -57,7 +58,9 @@ public class Main extends Application {
 		textField.setTextFormatter(textFormatter);
 		textField.setLayoutX(200);
 		final var label = new Label();
-		final var stringBinding = new StringBinding() {
+		label.setLayoutY(3);
+		label.setFont(new Font("Helvetica", 15));
+		label.textProperty().bind(new StringBinding() {
 		    { super.bind(textField.textProperty()); }
 		    @Override
 		    protected String computeValue() {
@@ -68,9 +71,7 @@ public class Main extends Application {
 		    		return "";
 		    	}
 		    }
-		};
-		label.setLayoutY(3);
-		label.textProperty().bind(stringBinding);
+		});
 		pane.getChildren().add(label);
 
 		final var scene = new Scene(pane, 400, 400);
