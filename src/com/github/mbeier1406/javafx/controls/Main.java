@@ -3,17 +3,25 @@ package com.github.mbeier1406.javafx.controls;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -43,9 +51,9 @@ public class Main extends Application {
 		final var gridPane = new GridPane();
 		gridPane.setHgap(15);
 		gridPane.setVgap(10);
-		gridPane.add(getLabelExample(), 0, 0);
-		gridPane.add(getButtonExample(), 1, 0);
-		final var scene = new Scene(gridPane, 800, 400);
+		gridPane.add(getLabelExample(stage), 0, 0);
+		gridPane.add(getButtonExample(stage), 1, 0);
+		final var scene = new Scene(gridPane, 1000, 400);
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -57,10 +65,11 @@ public class Main extends Application {
 	 * <li>Mit Text und Bild</li>
 	 * <li>Nur mit Bild und Skalierungseffekt</li>
 	 * </ol>
+	 * @param stage die Primary Stage
 	 * @return das Layout mit den Labeln
 	 * @see #start(Stage)
 	 */
-	private Pane getLabelExample() {
+	private Pane getLabelExample(final Stage stage) {
 		final var vBox = new VBox(5); // vBox.setSpacing(5);
 		final var label1 = new Label("Demonstriert die Nutzung von Farbe und Fonts");
 		label1.setTextFill(Color.web("#00f0a3"));
@@ -86,7 +95,20 @@ public class Main extends Application {
 		return vBox;
 	}
 
-	private Pane getButtonExample() {
+	/**
+	 * Demonstriert die Nutzung verschiedener Buttons.
+	 * <ol>
+	 * <li>Button mit Aktion X-Achse verschieben</li>
+	 * <li>Radio Buttons mit Aktion Label ändern</li>
+	 * <li>CheckBox für den Full-Sceen Modus</li>
+	 * <li>ChoiceBox als Menü</li>
+	 * <li>änderbare ComboBox als Menü</li>
+	 * </ol>
+	 * @param stage die Primary Stage
+	 * @return das layout mit den Buttons
+	 * @see #start(Stage)
+	 */
+	private Pane getButtonExample(final Stage stage) {
 		final var vBox = new VBox(5); // vBox.setSpacing(5);
 		final var button1 = new Button("Verschieb mich...", new ImageView(new Image(getClass().getResourceAsStream(IMAGES_GITHUB_PNG))));
 		button1.setFont(new Font("Helvetica", 15));
@@ -116,10 +138,46 @@ public class Main extends Application {
 		rb1.setUserData("Erster");
 		rb2.setUserData("Zweiter");
 		rb3.setUserData("Dritter");
-		final var rbVBox = new VBox(3);
-		rbVBox.getChildren().addAll(rb1, rb2, rb3);
-	
-		vBox.getChildren().addAll(button1, rbVBox, label);
+		final var rbHBox = new HBox();
+		rbHBox.setPadding(new Insets(10));
+		rbHBox.getChildren().addAll(rb1, rb2, rb3);
+		final var checkBox = new CheckBox("Full Screen");
+		checkBox.setSelected(false);
+		checkBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
+				stage.setFullScreen(!stage.isFullScreen());
+			}
+		});
+		checkBox.setTooltip(new Tooltip("Vollbildschirm auswählen"));
+		final var choiceBox = new ChoiceBox<Object>();
+		choiceBox.setItems(FXCollections.observableArrayList("Punkt 1", "Punkt 2", new Separator(), "Punkt 3"));
+		choiceBox.setTooltip(new Tooltip("Menüauswahl"));
+		choiceBox.getSelectionModel().select(0);
+		choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+				System.out.println("neu: "+newValue+" "+choiceBox.getItems().get((int) newValue));
+			}
+		});
+		final var comboBox = new ComboBox<String>();
+		comboBox.setItems(FXCollections.observableArrayList("Auswahl 1", "Auswahl 2", "Auswahl 3"));
+		comboBox.setPromptText("Auswahl...");
+		comboBox.setEditable(true);
+		final var buttonAuswahl = new Button("Auswahl");
+		final var labelAuswahl = new Label();
+		labelAuswahl.setFont(new Font("Helvetica", 20));
+		buttonAuswahl.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
+				labelAuswahl.setText(comboBox.getValue());
+			}
+		});
+		final var cbHBox = new HBox(5);
+		cbHBox.setPadding(new Insets(10));
+		cbHBox.getChildren().addAll(comboBox, buttonAuswahl, labelAuswahl);
+
+		vBox.getChildren().addAll(button1, rbHBox, label, checkBox, choiceBox, cbHBox);
 		return vBox;
 	}
 
