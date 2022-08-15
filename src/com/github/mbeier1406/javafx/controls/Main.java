@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -12,8 +13,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -53,7 +56,8 @@ public class Main extends Application {
 		gridPane.setVgap(10);
 		gridPane.add(getLabelExample(stage), 0, 0);
 		gridPane.add(getButtonExample(stage), 1, 0);
-		final var scene = new Scene(gridPane, 1000, 400);
+		gridPane.add(getTextfieldExample(stage), 2, 0);
+		final var scene = new Scene(gridPane, 1200, 400);
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -179,6 +183,54 @@ public class Main extends Application {
 
 		vBox.getChildren().addAll(button1, rbHBox, label, checkBox, choiceBox, cbHBox);
 		return vBox;
+	}
+
+	/**
+	 * Demonstriert die Nutzung von Textfeldern.
+	 * <ol>
+	 * <li></li>
+	 * </ol>
+	 * @param stage die Primary Stage
+	 * @return das layout mit den Textfeldern
+	 * @see #start(Stage)
+	 */
+	private Pane getTextfieldExample(final Stage stage) {
+		final var gridPane = new GridPane();
+		gridPane.setPadding(new Insets(15, 5, 15, 5));
+		gridPane.setVgap(5);
+		gridPane.setHgap(5);
+		var textFieldName = new TextField("Name...");
+		textFieldName.setPrefColumnCount(10);
+		var textFieldPasswort = new PasswordField();
+		textFieldPasswort.setPrefColumnCount(10);
+		var buttonAnzeigen = new Button("Anzeigen");
+		buttonAnzeigen.setMaxSize(100, 100);
+		var buttonClear = new Button("Clear");
+		buttonClear.setMaxSize(100, 100);
+		var label = new Label();
+
+		gridPane.add(textFieldName, 0, 0);
+		gridPane.add(textFieldPasswort, 0, 1);
+		gridPane.add(buttonAnzeigen, 1, 0);
+		gridPane.add(buttonClear, 1, 1);
+		gridPane.add(label, 0, 2);
+
+		buttonAnzeigen.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				label.setText(textFieldPasswort.getText());
+			}
+		});
+		buttonClear.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				textFieldName.clear();
+				textFieldPasswort.clear();
+				label.setText("");
+			}
+		});
+
+		return gridPane;
 	}
 
 	/**
