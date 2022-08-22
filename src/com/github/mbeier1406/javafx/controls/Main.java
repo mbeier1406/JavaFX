@@ -1,5 +1,7 @@
 package com.github.mbeier1406.javafx.controls;
 
+import java.util.stream.IntStream;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -7,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -15,11 +19,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -54,12 +60,15 @@ public class Main extends Application {
 		final var gridPane = new GridPane();
 		gridPane.setHgap(15);
 		gridPane.setVgap(10);
-		gridPane.add(getLabelExample(stage), 0, 0);
+		gridPane.add(getLabelExample(), 0, 0);
 		gridPane.add(getButtonExample(stage), 1, 0);
-		gridPane.add(getTextfieldExample(stage), 2, 0);
+		gridPane.add(getTextfieldExample(), 2, 0);
+		gridPane.add(getScrollbarExample(), 3, 0);
 		final var scene = new Scene(gridPane, 1200, 400);
+		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
+		stage.setIconified(false);
 	}
 
 	/**
@@ -73,7 +82,7 @@ public class Main extends Application {
 	 * @return das Layout mit den Labeln
 	 * @see #start(Stage)
 	 */
-	private Pane getLabelExample(final Stage stage) {
+	private Pane getLabelExample() {
 		final var vBox = new VBox(5); // vBox.setSpacing(5);
 		final var label1 = new Label("Demonstriert die Nutzung von Farbe und Fonts");
 		label1.setTextFill(Color.web("#00f0a3"));
@@ -187,14 +196,12 @@ public class Main extends Application {
 
 	/**
 	 * Demonstriert die Nutzung von Textfeldern.
-	 * <ol>
-	 * <li></li>
-	 * </ol>
+	 * <ol><li>Es werden Eingabe- und Passwortfeldern gezeigt</li></ol>
 	 * @param stage die Primary Stage
-	 * @return das layout mit den Textfeldern
+	 * @return das Layout mit den Textfeldern
 	 * @see #start(Stage)
 	 */
-	private Pane getTextfieldExample(final Stage stage) {
+	private Pane getTextfieldExample() {
 		final var gridPane = new GridPane();
 		gridPane.setPadding(new Insets(15, 5, 15, 5));
 		gridPane.setVgap(5);
@@ -232,6 +239,68 @@ public class Main extends Application {
 
 		return gridPane;
 	}
+
+	/**
+	 * Demonstriert die Nutzung von Scrollbars.
+	 * <ol>
+	 * <li>Anzeige der Position eines Scrollbars</li>
+	 * </ol>
+	 * @param stage die Primary Stage
+	 * @return das Layout mit den Scrollbars
+	 * @see #start(Stage)
+	 */
+	private Pane getScrollbarExample() {
+
+		/*  Beispiel I */
+		final var hBox = new HBox();
+		ScrollBar scrollBar = new ScrollBar();
+		scrollBar.setOrientation(Orientation.VERTICAL);
+		scrollBar.setValue(10);
+		Label label = new Label("Wert: 10");
+		scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number neu, Number alt) {
+				label.setText("Wert: " + (int) scrollBar.getValue());
+			}
+		});
+		hBox.getChildren().addAll(scrollBar, label);
+
+		/* Beispiel II */
+		final DropShadow dropShadow = new DropShadow();
+		dropShadow.setColor(Color.BLACK);
+		dropShadow.setOffsetX(10);
+		dropShadow.setOffsetY(10);
+		final var vBox = new VBox();
+		vBox.setLayoutX(5);
+		vBox.setSpacing(10);
+		vBox.setPadding(new Insets(20));
+		IntStream.range(0, 4).forEach(i -> {
+			final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("../Images/bild"+i+".jpg")));
+			imageView.setEffect(dropShadow);
+			vBox.getChildren().add(imageView);
+		});
+		final var scrollBar2 = new ScrollBar();
+		scrollBar2.setOrientation(Orientation.VERTICAL);
+		scrollBar2.setLayoutX(400 - scrollBar2.getWidth());
+		scrollBar2.setPrefHeight(400);
+		scrollBar2.setMax(600);
+		scrollBar2.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+				vBox.setLayoutY(-newValue.doubleValue());
+			}
+		});
+		final var group = new Group();
+		group.getChildren().addAll(vBox, scrollBar2);
+		final var stage = new Stage();
+		final var scene = new Scene(group, 400, 400);
+		stage.setScene(scene);
+		stage.show();
+		stage.requestFocus();
+
+		return hBox;
+	}
+
 
 	/**
 	 * Startet die Anwendung.
