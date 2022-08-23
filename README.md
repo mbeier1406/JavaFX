@@ -30,3 +30,4 @@ d. h. man benötigt ein Shellscript, in dem die Parameter beim Java-Aufruf mitge
 |Texte und Größe von Objekten automatisch ändern ✓|<a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Listenern und Binding</a>     |<code>com.github.mbeier1406.javafx.binding.Main.java</code>|
 |Auf Events reagieren ✓                           |<a href="https://docs.oracle.com/javafx/2/events/handlers.htm">Event Handlers</a>                   |<code>com.github.mbeier1406.javafx.events.Main.java</code> |
 |Controls: Buttons, Labels, Textfelder, ... ✓     |<a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/Control.html">Controls</a>|<code>com.github.mbeier1406.javafx.controls.Main.java</code> |
+|Dock: Beispiel für ein Programmschnellstart      |                                                                                                    |<code>com.github.mbeier1406.javafx.dock.Main.java</code> |
