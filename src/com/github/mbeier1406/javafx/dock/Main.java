@@ -1,10 +1,13 @@
 package com.github.mbeier1406.javafx.dock;
 
+import java.util.stream.IntStream;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -21,6 +24,26 @@ public class Main extends Application {
 	/** Verzeichnis mit den Bildern ist {@value} */
 	private static final String IMAGES = "../Images/";
 
+	/** Die Images und Pfade zu den Programmen im Dock werden in {@value} gespeichert */
+	private static final AnwendungsIF[] DOCK_APPS = new AnwendungsIF[] {
+			new AnwendungsIF() {
+				@Override public String getIcon() { return "eclipse.png"; }
+				@Override public String getProgram() { return null; }
+			},
+			new AnwendungsIF() {
+				@Override public String getIcon() { return "firefox.png"; }
+				@Override public String getProgram() { return "/bin/sh -c /snap/firefox/1670/usr/lib/firefox/firefox"; }
+			},
+			new AnwendungsIF() {
+				@Override public String getIcon() { return "textedit.png"; }
+				@Override public String getProgram() { return "/bin/sh -c /usr/bin/gedit --gapplication-service"; }
+			},
+			new AnwendungsIF() {
+				@Override public String getIcon() { return "mail.png"; }
+				@Override public String getProgram() { return null; }
+			}
+	};
+
 	/**
 	 * Liefert zu einem Bild einen {@linkplain ImageView} zur Anzeige in der Anwendung.
 	 * Die zugehörigen Dateien werden im Verzeichnis {@linkplain #IMAGES} gesucht.
@@ -31,8 +54,11 @@ public class Main extends Application {
 		return new ImageView(new Image(getClass().getResourceAsStream(IMAGES+datei)));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start(Stage stage) throws Exception {
+
+		final var group = new Group();
 
 		final var imageViewDock = getImageView("dock.png");
 		imageViewDock.setTranslateX(12);
@@ -44,15 +70,69 @@ public class Main extends Application {
 					Platform.exit();
 			}
 		});
+		group.getChildren().add(imageViewDock);
 
-		final var group = new Group();
-		group.getChildren().addAll(imageViewDock);
+		IntStream.range(0, DOCK_APPS.length).forEach(i -> {
+			final var imageView = getImageView(DOCK_APPS[i].getIcon());
+			imageView.setTranslateX(100 + 80*i);
+			imageView.setTranslateY(100);
+			imageView.setScaleX(0.8);
+			imageView.setScaleY(0.8);
+			imageView.setEffect(new Reflection());
+			imageView.setOnMouseEntered(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					imageView.setScaleX(1.0);
+					imageView.setScaleY(1.0);
+				}
+			});
+			imageView.setOnMouseExited(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					imageView.setScaleX(0.8);
+					imageView.setScaleY(0.8);
+				}
+			});
+			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					try {
+						System.out.println(DOCK_APPS[i].info());
+						Runtime.getRuntime().exec(DOCK_APPS[i].getProgram());
+					}
+					catch ( Exception e ) {
+						e.printStackTrace();
+					}
+				}
+			});
+			group.getChildren().add(imageView);
+		});
 
 		final var scene = new Scene(group, 500, 200);
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
 
+	}
+
+	/**
+	 * Definiert alle Funktionen zum Anzeigen und Starten der Anwendungen im Dock.
+	 * @author mbeier
+	 */
+	public interface AnwendungsIF {
+		/**
+		 * Liefert den Namen der Datei (ohne Pfad), die das Image für den Icon enthölt
+		 * @return den Dateinamen
+		 */
+		public String getIcon();
+		/**
+		 * Liefert den Pfad zur Anwendung.
+		 * @return den Pfad
+		 */
+		public String getProgram();
+		public default String info() {
+			return "AnwendungsIF [getIcon()=" + getIcon() + "; getProgram()=" + getProgram() + "]";
+		}
 	}
 
 	public static void main(String[] args) {
