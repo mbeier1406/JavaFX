@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.effect.Reflection;
@@ -12,7 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Beispiel für die Erstellung eines Docks mit Programmicons für den Schnellstart.
@@ -43,6 +47,9 @@ public class Main extends Application {
 				@Override public String getProgram() { return null; }
 			}
 	};
+
+	/** Größe des Bildschirms zur Positionierung des Docks */
+	public final Rectangle2D screenSize = Screen.getPrimary().getBounds();
 
 	/**
 	 * Liefert zu einem Bild einen {@linkplain ImageView} zur Anzeige in der Anwendung.
@@ -109,8 +116,12 @@ public class Main extends Application {
 		});
 
 		final var scene = new Scene(group, 500, 200);
+		scene.setFill(Color.TRANSPARENT);
 		stage.setScene(scene);
 		stage.setResizable(false);
+		stage.initStyle(StageStyle.TRANSPARENT);
+		stage.setX(screenSize.getWidth()/2 - 280);
+		stage.setY(screenSize.getHeight() - 150);
 		stage.show();
 
 	}
