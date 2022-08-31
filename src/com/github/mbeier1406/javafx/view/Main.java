@@ -1,18 +1,72 @@
 package com.github.mbeier1406.javafx.view;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * Demonstriert die Benutzung von {@linkplain ListView}.
+ * @author mbeier
+ */
 public class Main extends Application {
+
+	private ListView<String> listView = new ListView<String>();
 
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		final var gridPane = new GridPane();
+		final var hBox = new HBox(5);
 
-		final var scene = new Scene(gridPane, 400, 400);
+		// Spalte mit Anzeigen
+		final var vBoxLabel = new VBox();
+		final var labelAusgewaehlt = new Label("Ausgewählt:");
+		labelAusgewaehlt.setFont(new Font(15.0));
+		final var labelFokus = new Label("Fokus:");
+		labelFokus.setFont(new Font(15.0));
+		vBoxLabel.getChildren().addAll(labelAusgewaehlt, labelFokus);
+
+		// Spalte mit Listview
+		final ObservableList<String> observableList = FXCollections.observableArrayList();
+		observableList.addAll("Berlin", "Hamburg", "München", "Bremen", "Frankfurt", "Düsseldorf", "Dresden");
+		listView.setItems(observableList);
+		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		listView.setOrientation(Orientation.VERTICAL);
+		listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				labelAusgewaehlt.setText("Ausgewählt: "+listView.getSelectionModel().getSelectedItems()+" ("+
+						listView.getSelectionModel().getSelectedIndices()+")");
+				labelFokus.setText("Fokus: "+listView.getFocusModel().getFocusedItem()+" ("+
+						listView.getFocusModel().getFocusedIndex()+")");
+			}
+		});
+
+		// Spalte mit Buttons
+		final var vBoxButton = new VBox();
+		final var buttonList = Arrays
+				.stream(buttons)
+				.map(l -> { var b = new Button(l.getLabel()); b.setOnAction(l.getEventHandler()); b.setMaxWidth(Double.MAX_VALUE); return b; })
+				.collect(Collectors.toList());
+		vBoxButton.getChildren().addAll(buttonList);
+
+		hBox.getChildren().addAll(listView, vBoxButton, vBoxLabel);
+		final var scene = new Scene(hBox, 600, 400);
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -20,5 +74,81 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+	/** Die Schnittstelle definiert die notwendigen Eigenschaften der Schaltflächen */
+	public interface ButtonIF {
+		public String getLabel();
+		public EventHandler<ActionEvent> getEventHandler();
+	}
+
+	/** Definition der benötigten Schaltflächen */
+	public ButtonIF[] buttons = {
+		new ButtonIF() {
+			@Override public String getLabel() { return "Select All"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().selectAll();
+					}
+				};
+			}
+		},
+		new ButtonIF() {
+			@Override public String getLabel() { return "Clear All"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().clearSelection();
+					}
+				};
+			}
+		},
+		new ButtonIF() {
+			@Override public String getLabel() { return "Select First"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().selectFirst();
+					}
+				};
+			}
+		},
+		new ButtonIF() {
+			@Override public String getLabel() { return "Select Last"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().selectLast();
+					}
+				};
+			}
+		},
+		new ButtonIF() {
+			@Override public String getLabel() { return "Select Next"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().selectNext();
+					}
+				};
+			}
+		},
+		new ButtonIF() {
+			@Override public String getLabel() { return "Select Previous"; }
+			@Override public EventHandler<ActionEvent> getEventHandler() {
+				return new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						listView.getSelectionModel().selectPrevious();
+					}
+				};
+			}
+		}
+	};
 
 }
