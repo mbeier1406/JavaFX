@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -39,7 +40,9 @@ public class Main extends Application {
 		labelAusgewaehlt.setFont(new Font(15.0));
 		final var labelFokus = new Label("Fokus:");
 		labelFokus.setFont(new Font(15.0));
-		vBoxLabel.getChildren().addAll(labelAusgewaehlt, labelFokus);
+		final var labelEditiert = new Label("Editiert:");
+		labelEditiert.setFont(new Font(15.0));
+		vBoxLabel.getChildren().addAll(labelAusgewaehlt, labelFokus, labelEditiert);
 
 		// Spalte mit Listview
 		final ObservableList<String> observableList = FXCollections.observableArrayList();
@@ -47,6 +50,8 @@ public class Main extends Application {
 		listView.setItems(observableList);
 		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		listView.setOrientation(Orientation.VERTICAL);
+		listView.setEditable(true);
+		listView.setCellFactory(TextFieldListCell.forListView());
 		listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -54,6 +59,13 @@ public class Main extends Application {
 						listView.getSelectionModel().getSelectedIndices()+")");
 				labelFokus.setText("Fokus: "+listView.getFocusModel().getFocusedItem()+" ("+
 						listView.getFocusModel().getFocusedIndex()+")");
+			}
+		});
+		listView.setOnEditCommit(new EventHandler<ListView.EditEvent<String>>() {
+			@Override
+			public void handle(ListView.EditEvent<String> event) {
+				listView.getItems().set(event.getIndex(), event.getNewValue());
+				labelEditiert.setText("Editiert: "+event.getIndex());
 			}
 		});
 
