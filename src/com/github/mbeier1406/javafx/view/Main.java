@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ListView.EditEvent;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseEvent;
@@ -68,6 +69,18 @@ public class Main extends Application {
 				labelEditiert.setText("Editiert: "+event.getIndex());
 			}
 		});
+		listView.setOnEditStart(new EventHandler<ListView.EditEvent<String>>() {
+			@Override
+			public void handle(EditEvent<String> event) {
+				labelEditiert.setText("Editieren... "+event.getIndex());
+			}
+		});
+		listView.setOnEditCancel(new EventHandler<ListView.EditEvent<String>>() {
+			@Override
+			public void handle(EditEvent<String> event) {
+				labelEditiert.setText("Editieren beendet: "+event.getIndex());
+			}
+		});
 
 		// Spalte mit Buttons
 		final var vBoxButton = new VBox();
@@ -78,6 +91,12 @@ public class Main extends Application {
 		vBoxButton.getChildren().addAll(buttonList);
 
 		hBox.getChildren().addAll(listView, vBoxButton, vBoxLabel);
+		// https://docs.oracle.com/javase/8/javafx/api/javafx/scene/doc-files/cssref.html
+		hBox.setStyle("-fx-padding: 10;"
+				+ "-fx-border-style: solid inside;"
+				+ "-fx-border-width: 4;"
+				+ "-fx-border-radius: 5;"
+				+ "-fx-border-color: black;");
 		final var scene = new Scene(hBox, 600, 400);
 		stage.setScene(scene);
 		stage.show();
