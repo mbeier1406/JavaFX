@@ -26,7 +26,7 @@ import javafx.stage.Stage;
  * Demonstriert die Benutzung von {@linkplain ListView}.
  * @author mbeier
  */
-public class Main extends Application {
+public class MainListView extends Application {
 
 	private ListView<String> listView = new ListView<String>();
 
