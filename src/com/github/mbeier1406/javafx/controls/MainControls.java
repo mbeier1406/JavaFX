@@ -45,7 +45,7 @@ import javafx.stage.Stage;
  * </p>
  * @author mbeier
  */
-public class Main extends Application {
+public class MainControls extends Application {
 
 	/** Das im Programm verwendete Image ist {@value} */
 	private static final String IMAGES_GITHUB_PNG = "../Images/github.png";
