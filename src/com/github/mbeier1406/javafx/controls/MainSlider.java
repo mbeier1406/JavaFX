@@ -6,13 +6,18 @@ import static java.util.Locale.GERMAN;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -21,6 +26,9 @@ import javafx.stage.Stage;
  * @author mbeier
  */
 public class MainSlider extends Application {
+
+	/** URL zu diesem Code ist {@value} */
+	private static final String CODE_URL = "https://github.com/mbeier1406/JavaFX/blob/master/src/com/github/mbeier1406/javafx/controls/MainSlider.java";
 
 	@Override
 	public void start(final Stage stage) throws Exception {
@@ -32,6 +40,12 @@ public class MainSlider extends Application {
 		imageView.setFitHeight(image.getHeight()/6);
 		imageView.setFitWidth(image.getWidth()/6);
 		imageView.setEffect(sepiaTone);
+
+		/* Separator als Teiler */
+		final var separator = new Separator();
+		separator.setOrientation(Orientation.HORIZONTAL);
+		separator.setStyle("-fx-border-width: 1px;"
+				+ "-fx-border-style: dotted;");
 
 		/* Labels zur Anzeige der Slider-Werte */
 		final Label labelOpacity = new Label("Opacity Level"), labelSepia = new Label("Sepia Tone"), labelScale = new Label("Scale Factor"),
@@ -68,18 +82,29 @@ public class MainSlider extends Application {
 			}
 		});
 
+		/* Hyperlink zum Code */
+		final var hyperlink = new Hyperlink("Zum Code");
+		hyperlink.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				getHostServices().showDocument(CODE_URL);
+			}			
+		});
+
 		/* Elemente zusammenbauen */
 		final var gridPane = new GridPane();
 		gridPane.add(imageView, 1, 0);
-		gridPane.add(labelOpacity, 0, 1); gridPane.add(labelSepia, 0, 2); gridPane.add(labelScale, 0, 3);
-		gridPane.add(opacitySlider, 1, 1); gridPane.add(sepiaSlider, 1, 2); gridPane.add(scaleSlider, 1, 3);
-		gridPane.add(opacityValue, 2, 1); gridPane.add(sepiaValue, 2, 2); gridPane.add(scaleValue, 2, 3);
+		gridPane.add(separator, 1, 1);
+		gridPane.add(labelOpacity, 0, 2); gridPane.add(labelSepia, 0, 3); gridPane.add(labelScale, 0, 4);
+		gridPane.add(opacitySlider, 1, 2); gridPane.add(sepiaSlider, 1, 3); gridPane.add(scaleSlider, 1, 4);
+		gridPane.add(opacityValue, 2, 2); gridPane.add(sepiaValue, 2, 3); gridPane.add(scaleValue, 2, 4);
+		gridPane.add(hyperlink, 2, 5);
 		gridPane.setVgap(10);
 		gridPane.setHgap(10);
 		gridPane.setPadding(new Insets(10));
 
 		/* Anwendung fertigstellen */
-		final var scene = new Scene(gridPane, 600, 400);
+		final var scene = new Scene(gridPane, 650, 400);
 		scene.setRoot(gridPane);
 		stage.setScene(scene);
 		stage.setResizable(false);
