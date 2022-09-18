@@ -14,6 +14,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,11 +48,14 @@ public class MainSlider extends Application {
 		separator.setStyle("-fx-border-width: 1px;"
 				+ "-fx-border-style: dotted;");
 
-		/* Labels zur Anzeige der Slider-Werte */
+		/* Labels zur Anzeige der Slider-Werte und Tooltip */
 		final Label labelOpacity = new Label("Opacity Level"), labelSepia = new Label("Sepia Tone"), labelScale = new Label("Scale Factor"),
 				opacityValue = new Label("1.0"),
 				sepiaValue = new Label("0.0"),
 				scaleValue = new Label("1.0");
+		final var tooltip = new Tooltip("Skalierungsfaktor");
+		tooltip.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("../Images/exit.png"))));
+		scaleValue.setTooltip(tooltip);
 
 		/* Slider um die Effekte auf das Bild anzuwenden */
 		final Slider opacitySlider = new Slider(0, 1, 1), sepiaSlider = new Slider(0, 1, 0), scaleSlider = new Slider(0.5, 1, 1);
