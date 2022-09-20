@@ -1,5 +1,8 @@
 package com.github.mbeier1406.javafx.controls;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 import javafx.application.Application;
@@ -11,11 +14,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
@@ -34,8 +40,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * Demonstriert die Verwendung von UI Controls.
@@ -64,7 +72,8 @@ public class MainControls extends Application {
 		gridPane.add(getButtonExample(stage), 1, 0);
 		gridPane.add(getTextfieldExample(), 2, 0);
 		gridPane.add(getScrollbarExample(), 3, 0);
-		final var scene = new Scene(gridPane, 1200, 400);
+		gridPane.add(getPickerExample(), 0, 1);
+		final var scene = new Scene(gridPane, 1200, 600);
 		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
@@ -301,6 +310,50 @@ public class MainControls extends Application {
 		return hBox;
 	}
 
+	/**
+	 * 
+	 * @return die {@linkplain HBox} mit dem {@linkplain ColorPicker}
+	 * und dem Kreis mit der aktuell ausgewählten Farbe, {@linkplain DatePicker} usw.
+	 */
+	public Node getPickerExample() {
+		final var vBox = new VBox(5);
+		final var hBoxColor = new HBox();
+		final var circle = new Circle(50);
+		final var colorPicker = new ColorPicker(Color.BLACK);
+		colorPicker.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				circle.setFill(colorPicker.getValue());
+			}
+		});
+		hBoxColor.getChildren().addAll(colorPicker, circle);
+		final var hBoxDate = new HBox();
+		final var label = new Label(String.valueOf(LocalDate.now()));
+		Locale.setDefault(Locale.FRENCH);
+		StringConverter<LocalDate> stringConverter = new StringConverter<LocalDate>() {
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+			@Override
+			public LocalDate fromString(String arg0) {
+				return arg0 == null ? null : ( !arg0.isEmpty() ? LocalDate.parse(arg0, format) : null );
+			}
+			@Override
+			public String toString(LocalDate arg0) {
+				return arg0 == null ? "" : format.format(arg0);
+			}
+		};
+		final var datePicker = new DatePicker(LocalDate.now());
+		datePicker.setShowWeekNumbers(true);
+		datePicker.setConverter(stringConverter);
+		datePicker.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				label.setText(String.valueOf(datePicker.getValue());
+			}
+		});
+		hBoxDate.getChildren().addAll(datePicker, label);
+		vBox.getChildren().addAll(hBoxColor, hBoxDate);
+		return vBox;
+	}
 
 	/**
 	 * Startet die Anwendung.
