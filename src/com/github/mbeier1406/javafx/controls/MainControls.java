@@ -28,6 +28,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -73,6 +74,7 @@ public class MainControls extends Application {
 		gridPane.add(getTextfieldExample(), 2, 0);
 		gridPane.add(getScrollbarExample(), 3, 0);
 		gridPane.add(getPickerExample(), 0, 1);
+		gridPane.add(getTitledPaneExample(), 1, 1);
 		final var scene = new Scene(gridPane, 1200, 600);
 		stage.setResizable(false);
 		stage.setScene(scene);
@@ -311,7 +313,7 @@ public class MainControls extends Application {
 	}
 
 	/**
-	 * 
+	 * Zeigt die Nutzung von verschiedenen Pickern.
 	 * @return die {@linkplain HBox} mit dem {@linkplain ColorPicker}
 	 * und dem Kreis mit der aktuell ausgewählten Farbe, {@linkplain DatePicker} usw.
 	 */
@@ -347,12 +349,33 @@ public class MainControls extends Application {
 		datePicker.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				label.setText(String.valueOf(datePicker.getValue());
+				label.setText(String.valueOf(datePicker.getValue()));
 			}
 		});
 		hBoxDate.getChildren().addAll(datePicker, label);
 		vBox.getChildren().addAll(hBoxColor, hBoxDate);
 		return vBox;
+	}
+
+	/**
+	 * Erzeugt eine {@linkplain TitledPane} mit Texten und Eingabefeldern.
+	 * @return die TitledPane
+	 */
+	public Node getTitledPaneExample() {
+		final var titledPane = new TitledPane();
+		titledPane.setText("Auswahl");
+		final var gridPane = new GridPane();
+		gridPane.setVgap(5);
+		gridPane.setHgap(5);
+		gridPane.setPadding(new Insets(5));
+		gridPane.add(new Label("Eingabe1:"), 0, 0);
+		gridPane.add(new TextField(), 1, 0);
+		gridPane.add(new Label("Eingabe2:"), 0, 1);
+		gridPane.add(new TextField(), 1, 1);
+		gridPane.add(new Label("Eingabe3:"), 0, 2);
+		gridPane.add(new TextField(), 1, 2);
+		titledPane.setContent(gridPane);
+		return titledPane;
 	}
 
 	/**
