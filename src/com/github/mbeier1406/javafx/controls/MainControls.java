@@ -7,10 +7,7 @@ import java.util.stream.IntStream;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
@@ -35,7 +32,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -101,19 +97,13 @@ public class MainControls extends Application {
 		final var label2 = new Label("GitHub", new ImageView(new Image(getClass().getResourceAsStream(IMAGES_GITHUB_PNG))));
 		final var label3 = new Label();
 		label3.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(IMAGES_GITHUB_PNG))));
-		label3.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				label3.setScaleX(1.5); label3.setScaleY(1.5);
-				label3.setTranslateX(20); label3.setTranslateY(20);
-			}
+		label3.setOnMouseEntered(event -> {
+			label3.setScaleX(1.5); label3.setScaleY(1.5);
+			label3.setTranslateX(20); label3.setTranslateY(20);
 		});
-		label3.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				label3.setScaleX(1); label3.setScaleY(1);
-				label3.setTranslateX(0); label3.setTranslateY(0);
-			}
+		label3.setOnMouseExited(event -> {
+			label3.setScaleX(1); label3.setScaleY(1);
+			label3.setTranslateX(0); label3.setTranslateY(0);
 		});
 		vBox.getChildren().addAll(label1, label2, label3);
 		return vBox;
@@ -136,20 +126,12 @@ public class MainControls extends Application {
 		final var vBox = new VBox(5); // vBox.setSpacing(5);
 		final var button1 = new Button("Verschieb mich...", new ImageView(new Image(getClass().getResourceAsStream(IMAGES_GITHUB_PNG))));
 		button1.setFont(new Font("Helvetica", 15));
-		button1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				button1.setTranslateX(button1.getTranslateX() > 0 ? 0 : 50); 
-			}
-		});
+		button1.setOnMouseClicked(event -> button1.setTranslateX(button1.getTranslateX() > 0 ? 0 : 50));
 		final var label = new Label();
 		final var toggleGroup = new ToggleGroup();
-		toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> observableValue, Toggle oldValue, Toggle newValue) {
-				if ( toggleGroup.getSelectedToggle() != null )
-					label.setText((String) toggleGroup.getSelectedToggle().getUserData());
-			}
+		toggleGroup.selectedToggleProperty().addListener((ChangeListener<Toggle>) (observableValue, oldValue, newValue) -> {
+			if ( toggleGroup.getSelectedToggle() != null )
+				label.setText((String) toggleGroup.getSelectedToggle().getUserData());
 		});
 		final var rb1 = new RadioButton("Auswahl 1");
 		final var rb2 = new RadioButton("Auswahl 2");
@@ -167,23 +149,15 @@ public class MainControls extends Application {
 		rbHBox.getChildren().addAll(rb1, rb2, rb3);
 		final var checkBox = new CheckBox("Full Screen");
 		checkBox.setSelected(false);
-		checkBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				stage.setFullScreen(!stage.isFullScreen());
-			}
-		});
+		checkBox.setOnMouseClicked(event -> stage.setFullScreen(!stage.isFullScreen()));
 		checkBox.setTooltip(new Tooltip("Vollbildschirm auswählen"));
 		final var choiceBox = new ChoiceBox<Object>();
 		choiceBox.setItems(FXCollections.observableArrayList("Punkt 1", "Punkt 2", new Separator(), "Punkt 3"));
 		choiceBox.setTooltip(new Tooltip("Menüauswahl"));
 		choiceBox.getSelectionModel().select(0);
-		choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-				System.out.println("neu: "+newValue+" "+choiceBox.getItems().get((int) newValue));
-			}
-		});
+		choiceBox.getSelectionModel()
+			.selectedIndexProperty()
+			.addListener((ChangeListener<Number>) (observableValue, oldValue, newValue) -> System.out.println("neu: "+newValue+" "+choiceBox.getItems().get((int) newValue)));
 		final var comboBox = new ComboBox<String>();
 		comboBox.setItems(FXCollections.observableArrayList("Auswahl 1", "Auswahl 2", "Auswahl 3"));
 		comboBox.setPromptText("Auswahl...");
@@ -191,12 +165,7 @@ public class MainControls extends Application {
 		final var buttonAuswahl = new Button("Auswahl");
 		final var labelAuswahl = new Label();
 		labelAuswahl.setFont(new Font("Helvetica", 20));
-		buttonAuswahl.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				labelAuswahl.setText(comboBox.getValue());
-			}
-		});
+		buttonAuswahl.setOnMouseClicked(event -> labelAuswahl.setText(comboBox.getValue()));
 		final var cbHBox = new HBox(5);
 		cbHBox.setPadding(new Insets(10));
 		cbHBox.getChildren().addAll(comboBox, buttonAuswahl, labelAuswahl);
@@ -233,19 +202,11 @@ public class MainControls extends Application {
 		gridPane.add(buttonClear, 1, 1);
 		gridPane.add(label, 0, 2);
 
-		buttonAnzeigen.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				label.setText(textFieldPasswort.getText());
-			}
-		});
-		buttonClear.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				textFieldName.clear();
-				textFieldPasswort.clear();
-				label.setText("");
-			}
+		buttonAnzeigen.setOnAction(event -> label.setText(textFieldPasswort.getText()));
+		buttonClear.setOnAction(event -> {
+			textFieldName.clear();
+			textFieldPasswort.clear();
+			label.setText("");
 		});
 
 		return gridPane;
@@ -268,12 +229,7 @@ public class MainControls extends Application {
 		scrollBar.setOrientation(Orientation.VERTICAL);
 		scrollBar.setValue(10);
 		Label label = new Label("Wert: 10");
-		scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observableValue, Number neu, Number alt) {
-				label.setText("Wert: " + (int) scrollBar.getValue());
-			}
-		});
+		scrollBar.valueProperty().addListener((ChangeListener<Number>) (observableValue, neu, alt) -> label.setText("Wert: " + (int) scrollBar.getValue()));
 		hBox.getChildren().addAll(scrollBar, label);
 
 		/* Beispiel II */
@@ -295,12 +251,7 @@ public class MainControls extends Application {
 		scrollBar2.setLayoutX(400 - scrollBar2.getWidth());
 		scrollBar2.setPrefHeight(400);
 		scrollBar2.setMax(600);
-		scrollBar2.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-				vBox.setLayoutY(-newValue.doubleValue());
-			}
-		});
+		scrollBar2.valueProperty().addListener((ChangeListener<Number>) (observableValue, oldValue, newValue) -> vBox.setLayoutY(-newValue.doubleValue()));
 		final var group = new Group();
 		group.getChildren().addAll(vBox, scrollBar2);
 		final var stage = new Stage();
@@ -322,12 +273,7 @@ public class MainControls extends Application {
 		final var hBoxColor = new HBox();
 		final var circle = new Circle(50);
 		final var colorPicker = new ColorPicker(Color.BLACK);
-		colorPicker.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				circle.setFill(colorPicker.getValue());
-			}
-		});
+		colorPicker.setOnAction(event -> circle.setFill(colorPicker.getValue()));
 		hBoxColor.getChildren().addAll(colorPicker, circle);
 		final var hBoxDate = new HBox();
 		final var label = new Label(String.valueOf(LocalDate.now()));
@@ -346,12 +292,7 @@ public class MainControls extends Application {
 		final var datePicker = new DatePicker(LocalDate.now());
 		datePicker.setShowWeekNumbers(true);
 		datePicker.setConverter(stringConverter);
-		datePicker.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				label.setText(String.valueOf(datePicker.getValue()));
-			}
-		});
+		datePicker.setOnAction(event -> label.setText(String.valueOf(datePicker.getValue())));
 		hBoxDate.getChildren().addAll(datePicker, label);
 		vBox.getChildren().addAll(hBoxColor, hBoxDate);
 		return vBox;
