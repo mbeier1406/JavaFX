@@ -71,6 +71,7 @@ public class MainFileChooser extends Application {
 	 * Öffent die ausgewählte Datei mit dem im OS vorgegebenen Programm.
 	 * @param file die ausgewählte Datei
 	 */
+	@SuppressWarnings("unused")
 	private void openFile(File file) {
 		try {
 			desktop.open(file);

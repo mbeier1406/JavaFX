@@ -3,12 +3,13 @@ package com.github.mbeier1406.javafx.controls;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,16 +36,7 @@ import javafx.stage.Stage;
 public class MainDateienBearbeiten extends Application {
 
 	/** Zeigt die ausgewählten Dateien an */
-	private ListView<String> listView;
-
-	/** Die Namen der ausgewählten Dateien zur Anzeige in {@linkplain #listView} */
-	private List<String> listOfFileNames;
-
-	/** Anzeige der {@linkplain #listOfFileNames} in {@linkplain #listView} */
-	private ObservableList<String> listViewFileList;
-
-	/** Der ausgewählte Name für die jeweilige Bearbeitung */
-	private String fileName;
+	private ListView<String> listView = new ListView<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -55,13 +47,13 @@ public class MainDateienBearbeiten extends Application {
 		menueFilesItemOpen.setOnAction(event -> {
 			final var fileChooser = new FileChooser();
 			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT", "*.txt"));
-			listOfFileNames = Optional
-				.ofNullable(fileChooser.showOpenMultipleDialog(stage))
-				.orElse(Collections.emptyList())
-				.stream()
-				.map(File::getName)
-				.collect(toList());
-			System.out.println("listOfFileNames: "+listOfFileNames);
+			listView.setItems(FXCollections.observableArrayList(
+				Optional
+					.ofNullable(fileChooser.showOpenMultipleDialog(stage))
+					.orElse(Collections.emptyList())
+					.stream()
+					.map(File::getAbsolutePath)
+					.collect(toList())));
 		});
 
 		final var menueFilesItemExit = new MenuItem("Ende");
@@ -76,6 +68,22 @@ public class MainDateienBearbeiten extends Application {
 		final var labelUmbenennen = new Label("Neuer Dateiname:");
 		final var textFieldUmbenennen = new TextField();
 		final var buttonUmbenennen = new Button("Umbenennen");
+		buttonUmbenennen.setOnAction(event -> {
+			if ( textFieldUmbenennen.getText() != null && !textFieldUmbenennen.getText().isEmpty() )
+				if ( listView.getItems().size() > 0 ) {
+					ObservableList<String> items = listView.getItems();
+					System.out.println("Dateien: "+items);
+					final var dateienNeu = new ArrayList<String>();
+					items.stream().forEach(datei -> {
+						dateienNeu.add(datei.replaceAll("^(.*)\\.txt", "$1_"+textFieldUmbenennen.getText()+".txt"));
+						new File(datei).renameTo(new File(dateienNeu.get(dateienNeu.size()-1)));
+					});
+					items.clear();
+					items.addAll(dateienNeu);
+					System.out.println("Dateien (neu): "+items);
+					listView.refresh();
+				}
+		});
 
 		final var labelNeu = new Label("Neue Datei:");
 		final var textFieldNeu = new TextField();
@@ -83,13 +91,12 @@ public class MainDateienBearbeiten extends Application {
 
 		final var separator = new Separator();
 		separator.setPadding(new Insets(10, 0, 5 , 0));
+
 		final var vBox = new VBox(5);
 		vBox.getChildren().addAll(labelUmbenennen, textFieldUmbenennen, buttonUmbenennen, separator, labelNeu, textFieldNeu, buttonNeu);
 		vBox.setPadding(new Insets(5, 10, 5 , 10));
 		vBox.setAlignment(Pos.CENTER_LEFT);
 
-		listView = new ListView<>();
-	
 		// Zusammenbauen
 		final var borderPane = new BorderPane();
 		borderPane.setTop(menuBar);
