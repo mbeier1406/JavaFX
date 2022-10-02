@@ -1,11 +1,17 @@
 package com.github.mbeier1406.javafx.graphic;
 
+import java.awt.Point;
+
+import com.sun.jdi.event.Event;
+
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
@@ -23,7 +29,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * Zeigt die Verwendung von 2D-Grafiken.
+ * Zeigt die Verwendung von 2D-Grafiken und Shapes mit Drag-And-Drop.
  * @author mbeier
  */
 public class MainGraphics2D extends Application {
@@ -60,6 +66,13 @@ public class MainGraphics2D extends Application {
 		final var shape2 = Shape.intersect(new Circle(100, 650, 50, Color.DARKRED), new Circle(125, 650, 50, Color.DARKGREEN));
 		final var shape3 = Shape.subtract(new Circle(650, 650, 50, Color.DARKRED), new Circle(625, 650, 50, Color.DARKGREEN));
 
+		shape1.setFill(Color.DARKCYAN);
+		shape1.setUserData(Cursor.HAND);
+		shape1.setCursor((Cursor) shape1.getUserData());
+		shape1.setOnMousePressed(shapePressed);
+		shape1.setOnMouseDragged(shapeDragged);
+		shape1.setOnMouseReleased(shapeReleased);
+
 		final var group = new Group();
 		group.getChildren().addAll(rectangle, circle, ellipse, line, text, polygon, polyline, path, shape1, shape2, shape3);
 
@@ -67,6 +80,40 @@ public class MainGraphics2D extends Application {
 		stage.setScene(scene);
 		stage.show();
 	}
+
+	/** {@linkplain #startPosMouse}: wo mit der Maus gedrückt wurde, {@linkplain #startPosShape} wo sich die Shape befindet */
+	private Point startPosMouse, startPosShape;
+
+	/**
+	 * Behandelt den {@link Event} {@linkplain Shape#setOnMousePressed(EventHandler)}: Startpunkt für den Drag-And-Drop
+	 * Vorgang: es wird sich gemerkt, wo die Maus ({@linkplain #startPosMouse} und die Shape {@linkplain #startPosShape}
+	 * sich gerade befindet.
+	 */
+	private EventHandler<MouseEvent> shapePressed = ( event ) -> {
+		startPosMouse = new Point((int) event.getSceneX(), (int) event.getSceneY());
+		startPosShape = new Point((int) ((Shape) event.getSource()).getTranslateX(), (int) ((Shape) event.getSource()).getTranslateY());
+	};
+
+	/**
+	 * Behandelt den {@link Event} {@linkplain Shape#setOnMouseDragged(EventHandler)}: Es wird der Cursor geändert
+	 * und die Differenz zum Startevent {@linkplain #shapePressed} berechnet, und dieses Offset auf die ausgewählte Shape
+	 * angewendet {@linkplain Shape#setTranslateX(double)} und {@linkplain Shape#setTranslateY(double)}.
+	 */
+	private EventHandler<MouseEvent> shapeDragged = ( event ) -> {
+		Shape shape = ((Shape) event.getSource());
+		shape.setCursor(Cursor.CROSSHAIR);
+		shape.setTranslateX(startPosShape.getX()+(event.getSceneX()-startPosMouse.getX()));
+		shape.setTranslateY(startPosShape.getY()+(event.getSceneY()-startPosMouse.getY()));
+	};
+
+	/**
+	 * Behandelt den {@link Event} {@linkplain Shape#setOnMouseReleased(EventHandler)}: der
+	 * Cursor wird wieder auf den Originalwert zurückgesetzt.
+	 */
+	private EventHandler<MouseEvent> shapeReleased = ( event ) -> {
+		Shape shape = ((Shape) event.getSource());
+		shape.setCursor((Cursor) shape.getUserData());
+	};
 
 	public static void main(String[] args) {
 		launch(args);
