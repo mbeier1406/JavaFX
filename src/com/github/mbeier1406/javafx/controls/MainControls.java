@@ -63,6 +63,8 @@ public class MainControls extends Application {
 	public void start(final Stage stage) throws Exception {
 		stage.setTitle("Demonstration Controls");
 		final var gridPane = new GridPane();
+		gridPane.setGridLinesVisible(true);
+		gridPane.setPadding(new Insets(5));
 		gridPane.setHgap(15);
 		gridPane.setVgap(10);
 		gridPane.add(getLabelExample(), 0, 0);
