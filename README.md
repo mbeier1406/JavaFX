@@ -19,6 +19,12 @@
 * <b>Hinweis</b>: für Programme mit <u>JDK &lt; Version 11</u> muss zusätzlich das <i>JavaFX SDK</i> dem Classpath hinzugefügt werden!
 
 
+# Weitere Informationen
+
+* CSS-Befehle: <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/doc-files/cssref.html">JavaFX CSS Reference Guide</a>
+* Farbtabelle: <a href="https://www.farb-tabelle.de/de/farbtabelle.htm">Farbtafel mit Beispielen</a>
+* Eclipse Launch Configuration: <a href="https://github.com/mbeier1406/JavaFX/blob/master/src/com/github/mbeier1406/javafx/quizapp/Main.launch">Ein Beispiel für eine Startkonfiguration</a>
+
 # JavaFX Beispiele
 
 Beim Erzeugen eines <i>executable JAR</i> in Eclipse über <code>File -> Export -> Java Runnable JAR file</code> werden die VM-Parameter nicht berücksichtigt,

@@ -1,1 +1,34 @@
-/* application.css */
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root {
+	-fx-base: rgb(198, 226, 255);
+	-fx-font-size: 20;	
+}
+
+Label {
+	-fx-alignment: center;
+	-fx-text-alignment: center;
+	-fx-wrap-text: true;
+	-fx-font: 20 "Courier";
+}
+
+Button {
+	-fx-font: 20 "Courier";
+}
+
+#buttonYes {
+	-fx-background-color: rgb(50, 205, 50);
+}
+#buttonYes:hover {
+	-fx-background-color: derived(-fx-base, -40%);
+}
+#buttonNo {
+	-fx-background-color: rgb(255, 69, 0);	
+}
+#buttonNo:hover {
+	-fx-background-color: derived(-fx-base, -40%);
+}
+#progressBarHBox {
+	-fx-background-color: derived(-fx-base, +50%);
+}
+

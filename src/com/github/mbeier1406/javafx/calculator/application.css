@@ -1,0 +1,32 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+/* Styleklassen */
+.root {
+	-fx-base: grey;
+}
+.text-field {
+	-fx-text-fill: black;
+}
+
+/* Pseudoklassen */
+.button:hover {
+	-fx-background-color: derive(-fx-base, +30%);	
+}
+.button:pressed {
+	-fx-background-color: derive(-fx-base, +60%);	
+}
+
+/* Eigene Styleklassen */
+.operator {
+	-fx-background-color: rgb(198, 226, 255);
+}
+
+/* Typselektoren */
+Button {
+	-fx-font: 30 "Arial";
+}
+
+/* ID */
+#buttonEquals {
+	-fx-background-color: derive(-fx-base, -30%);
+}
