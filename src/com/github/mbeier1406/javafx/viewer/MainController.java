@@ -6,10 +6,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -36,11 +38,18 @@ public class MainController {
     @FXML
     private ImageView imageView;
 
-    /** Die Datei, die angezeigt werden soll */
-    private File file;
+    private double opacity;
+	private SepiaTone sepiaTone;
+
+    @FXML
+    public void initialize() {
+    	opacity = 0.9;
+    	imageView.setEffect(sepiaTone=new SepiaTone(0));
+    }
 
     @FXML
     void openButtonTapped(ActionEvent event) throws IOException {
+    	File file;
     	final var fileChooser = new FileChooser();
     	fileChooser.getExtensionFilters().addAll(
     			new FileChooser.ExtensionFilter("PNG", "*.png"),
@@ -53,17 +62,18 @@ public class MainController {
 
     @FXML
     void opacityButtonTapped(ActionEvent event) {
-
+    	imageView.setOpacity((opacity=opacity==0.5?0.9:0.5));
+    	System.out.println("opacity="+opacity);
     }
 
     @FXML
     void effectButtonTapped(ActionEvent event) {
-
+    	sepiaTone.setLevel(sepiaTone.getLevel()==0?0.9:0);
     }
 
     @FXML
     void endButtonTapped(ActionEvent event) {
-
+    	Platform.exit();
     }
 
 }
