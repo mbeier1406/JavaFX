@@ -17,6 +17,10 @@ public class Main extends Application {
 		final Parent root = FXMLLoader.load(getClass().getResource("MainFXML.fxml"));
 		final var scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		scene.setOnMouseClicked(event -> {
+				if ( event.getClickCount() > 1 )
+					stage.setFullScreen(true);
+		});
 		stage.setScene(scene);
 		stage.setResizable(true);
 		stage.setTitle("Player");

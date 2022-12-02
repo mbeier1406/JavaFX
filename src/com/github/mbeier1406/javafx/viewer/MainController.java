@@ -6,15 +6,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * Controller für {@code MainFXML.fxml}.
@@ -73,7 +75,20 @@ public class MainController {
 
     @FXML
     void endButtonTapped(ActionEvent event) {
-    	Platform.exit();
+    	final var fxmlLoader = new FXMLLoader();
+    	fxmlLoader.setLocation(getClass().getResource("ExitFXML.fxml"));
+		try {
+			fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		((ExitController) fxmlLoader.getController()).setImageView(imageView);
+		Scene scene = new Scene(fxmlLoader.getRoot());
+		Stage stage = new Stage();
+		stage.setTitle("Beenden?");
+		stage.setScene(scene);
+		stage.show();
     }
 
 }
