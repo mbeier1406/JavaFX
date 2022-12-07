@@ -40,3 +40,21 @@ d. h. man benötigt ein Shellscript, in dem die Parameter beim Java-Aufruf mitge
 |2D-Grafiken                                      |<a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/shape/Shape.html">Class Shape</a> |<code>com.github.mbeier1406.javafx.graphic.Main*.java</code> |
 |Dock: Beispiel für ein Programmschnellstart      |                                                                                                    |<code>com.github.mbeier1406.javafx.dock.Main.java</code>     |
 
+# JDBC Beispiele
+
+Auf dem Rechner Docker installieren. Installieren und Starten des [Oracle XE Images](https://hub.docker.com/r/gvenzl/oracle-xe).
+
+```Shell
+mbeier@zirkonia:~$ docker run -d -p 1521:1521 -e ORACLE_PASSWORD=geheim -e APP_USER=mdd -e APP_USER_PASSWORD=geheim gvenzl/oracle-xe
+Unable to find image 'gvenzl/oracle-xe:latest' locally
+latest: Pulling from gvenzl/oracle-xe
+59e0972d3a0b: Pull complete 
+b374bb1192d1: Pull complete 
+Digest: sha256:874785df54bbfa78bd6315b1affae5a16d496d43e9a9a35539f0915105475062
+Status: Downloaded newer image for gvenzl/oracle-xe:latest
+daf2ec865b601c5f6d9033e5285470d2503fed6b268e7966ca5f5f472b8e63b5
+mbeier@zirkonia:~$
+```
+Konfiguration der Datenbankverbindung im Oracle SQL Developer:<br/>
+![Konfiguration Oracle SQL Developer](doc/OracleDatabaseConnection.png?raw=true "Database Connection")
+
