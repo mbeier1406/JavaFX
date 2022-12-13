@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mbeier1406.javafx.viewer.MainController">
    <children>
-      <HBox alignment="BOTTOM_CENTER" layoutX="8.0" layoutY="355.0" prefHeight="50.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <HBox fx:id="hBox" alignment="BOTTOM_CENTER" layoutX="8.0" layoutY="355.0" prefHeight="50.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Button fx:id="openButton" mnemonicParsing="false" onAction="#openButtonTapped" text="Open" />
             <Button fx:id="effectButton" mnemonicParsing="false" onAction="#effectButtonTapped" text="Effect" />

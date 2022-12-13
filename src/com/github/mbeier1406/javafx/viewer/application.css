@@ -1,2 +1,23 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
+.root {
+	-fx-base: rgb(122, 139,139);
+}
+
+#openButton {
+	-fx-background-image: url("../Images/open.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: 32 32;
+	-fx-background-color: transparent;
+	-fx-cursor: hand;	
+}
+
+#hBox {
+	-fx-background-color: derived(-fx-base, 20%);
+}
+
+.button:hover {
+	-fx-scale-x: 1.2;	
+	-fx-scale-y: 1.2;	
+}
