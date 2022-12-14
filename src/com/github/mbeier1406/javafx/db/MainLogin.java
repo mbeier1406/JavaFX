@@ -9,8 +9,8 @@ public class MainLogin extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		final var scene = new Scene(FXMLLoader.load(getClass().getResource("MainLogin.fxml")));
-		scene.getStylesheets().add(getClass().getResource("mainlogin.css").toExternalForm());
+		final var scene = new Scene(FXMLLoader.load(getClass().getResource("/com/github/mbeier1406/javafx/db/ui/MainLogin.fxml")));
+		scene.getStylesheets().add(getClass().getResource("ui/mainlogin.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Login");
 		primaryStage.setResizable(false);

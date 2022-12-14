@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mbeier1406.javafx.db.ControllerLogin">
+   <children>
+      <Label layoutX="32.0" layoutY="73.0" text="Datenbank Status" />
+      <Label fx:id="dbStatusLabel" layoutX="181.0" layoutY="73.0" text="OK" />
+      <Label layoutX="47.0" layoutY="192.0" prefHeight="5.0" prefWidth="66.0" text="Benutzer" />
+      <Label layoutX="47.0" layoutY="225.0" text="Passwort" />
+      <Circle fx:id="dbStatusCircle" fill="#ff1f1f" layoutX="269.0" layoutY="84.0" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+      <TextField fx:id="userNametextField" layoutX="128.0" layoutY="187.0" onKeyReleased="#onKeyReleased" promptText="Benutzername" />
+      <PasswordField fx:id="passwordTextField" layoutX="128.0" layoutY="220.0" onKeyReleased="#onKeyReleased" promptText="Kennwort" />
+      <Button fx:id="loginButton" layoutX="172.0" layoutY="286.0" mnemonicParsing="false" text="Login" />
+   </children>
+</AnchorPane>
