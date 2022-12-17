@@ -27,16 +27,16 @@
                                  <children>
                                     <Label text="Neuer Kontakt: " />
                                     <TextField fx:id="firstNameTextField" onKeyReleased="#keyReleasedProperty" promptText="Vorname" />
-                                    <TextField fx:id="lastNametextField" onKeyReleased="#keyReleasedProperty" promptText="Nachname" />
+                                    <TextField fx:id="lastNameTextField" onKeyReleased="#keyReleasedProperty" promptText="Nachname" />
                                     <TextField fx:id="phoneNumberTextField" onKeyReleased="#keyReleasedProperty" promptText="Handy" />
-                                    <TextField onAction="#eMailTextField" onKeyReleased="#keyReleasedProperty" promptText="E-Mail" />
+                                    <TextField fx:id="eMailTextField" onKeyReleased="#keyReleasedProperty" promptText="E-Mail" />
                                     <HBox alignment="CENTER" prefHeight="36.0" prefWidth="329.0" spacing="10.0">
                                        <children>
                                           <Button fx:id="createButton" mnemonicParsing="false" onAction="#createButtonPressed" text="Erstellen" />
                                           <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonPressed" text="Abbrechen" />
                                        </children>
                                     </HBox>
-                                    <Button mnemonicParsing="false" text="Lade Kontakte" />
+                                    <Button mnemonicParsing="false" onAction="#loadContactData" text="Lade Kontakte" />
                                  </children>
                                  <padding>
                                     <Insets left="40.0" right="40.0" />

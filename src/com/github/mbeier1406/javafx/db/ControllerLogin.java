@@ -89,12 +89,12 @@ public class ControllerLogin implements Initializable {
     void onKeyReleased(KeyEvent event) {
 		loginButton.setDisable(
 				loginDb == null ||
-				credFail(userNametextField.getText(), USR_PASS_LENN) ||
-				credFail(passwordTextField.getText(), USR_PASS_LENN));
+				strNotOk(userNametextField.getText(), USR_PASS_LENN) ||
+				strNotOk(passwordTextField.getText(), USR_PASS_LENN));
     }
 
-    private static final boolean credFail(String cred, int len) {
-    	return cred.isEmpty()  || cred.trim().isEmpty()  || cred.length() < len;
+    public static final boolean strNotOk(String cred, int len) {
+    	return cred.isEmpty() || cred.trim().isEmpty()  || cred.length() < len;
     }
 
     public Tooltip getTooltip(String msg) {
