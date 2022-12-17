@@ -7,9 +7,12 @@ import javafx.stage.Stage;
 
 public class MainLogin extends Application {
 
+	/** Das Basisverzeichnis für die FXML-Dateien ist {@value} */
+	public static final String FXML_BASE_DIR = "/com/github/mbeier1406/javafx/db/ui/";
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		final var scene = new Scene(FXMLLoader.load(getClass().getResource("/com/github/mbeier1406/javafx/db/ui/MainLogin.fxml")));
+		final var scene = new Scene(FXMLLoader.load(getClass().getResource(FXML_BASE_DIR+"MainLogin.fxml")));
 		scene.getStylesheets().add(getClass().getResource("ui/mainlogin.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Login");

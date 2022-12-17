@@ -16,6 +16,6 @@
       <Circle fx:id="dbStatusCircle" fill="#ff1f1f" layoutX="269.0" layoutY="84.0" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
       <TextField fx:id="userNametextField" layoutX="128.0" layoutY="187.0" onKeyReleased="#onKeyReleased" promptText="Benutzername" />
       <PasswordField fx:id="passwordTextField" layoutX="128.0" layoutY="220.0" onKeyReleased="#onKeyReleased" promptText="Kennwort" />
-      <Button fx:id="loginButton" layoutX="172.0" layoutY="286.0" mnemonicParsing="false" text="Login" />
+      <Button fx:id="loginButton" layoutX="172.0" layoutY="286.0" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" />
    </children>
 </AnchorPane>

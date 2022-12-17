@@ -13,5 +13,5 @@
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.github.mbeier1406.javafx.db.MainLogin"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="JavaFX"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JavaFX"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--module-path /home/mbeier/Eclipse/libs/javafx-sdk-17.0.2/lib --add-modules=javafx.controls,javafx.fxml"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--module-path /home/mbeier/Eclipse/libs/javafx-sdk-17.0.2/lib --add-modules=javafx.controls,javafx.fxml -Dusr=mdd -Dpass=qwe123"/>
 </launchConfiguration>
