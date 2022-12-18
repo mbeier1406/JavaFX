@@ -34,12 +34,16 @@ public class ControllerKontakt implements Initializable {
 
     @FXML
     void cancelButtonPressed(ActionEvent event) {
-
+    	firstNameTextField.clear();
+    	lastNameTextField.clear();
+    	phoneNumberTextField.clear();
+    	eMailTextField.clear();
+    	cancelButton.setDisable(true);
+    	createButton.setDisable(true);
     }
 
     @FXML
     void createButtonPressed(ActionEvent event) {
-
     }
 
     @FXML
