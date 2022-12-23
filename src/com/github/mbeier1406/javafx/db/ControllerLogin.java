@@ -71,9 +71,9 @@ public class ControllerLogin implements Initializable {
     void loginButtonAction(ActionEvent event) {
     	try {
 			loginDb.authenticate(userNametextField.getText(), passwordTextField.getText());
+			loginDb = null; // DB-Verbindung ist nach erfolgreichem Login geschlossen, Objekt nicht mehr verwenden
 			displayPopUp("Login erfolgreich.");
 			((Stage) loginButton.getScene().getWindow()).close();
-			loginDb.closeDb();
 			final var stage = new Stage();
 			stage.setScene(new Scene(FXMLLoader.load(getClass().getResource(FXML_BASE_DIR+"Kontakt.fxml"))));
 			stage.setTitle("Dashboard");

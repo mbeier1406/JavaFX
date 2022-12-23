@@ -2,8 +2,6 @@ package com.github.mbeier1406.javafx.db;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,28 +9,19 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 
-public class LoginDb {
-
-	/** Der Standard Connection-String der DB im Docker Container */
-	private static final String CONNECTION  = System.getProperty("conn", "jdbc:oracle:thin:@localhost:1521/xepdb1");
-
-	/** Falls der Benutzer nicht per Property gesetzt wird */
-	private static final String USR  = System.getProperty("usr", "benutzer");
-
-	/** Falls das Kennwort nicht per Property gesetzt wird */
-	private static final String PASS = System.getProperty("pass", "geheim");
+/**
+ * Verifiziert ein Login (Userr/Passwort) gegen die konfigurierte Datenbank.
+ * @author mbeier
+ */
+public class LoginDb extends DbBasis {
 
     /** Zum Hashen der Kennwoerter */
     private static MessageDigest messageDigest;
 
-    /** DB Verbindung */
-    private Connection c;
-
 	static {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
 			messageDigest = MessageDigest.getInstance("SHA-256");
-		} catch (NoSuchAlgorithmException | ClassNotFoundException e) {
+		} catch (NoSuchAlgorithmException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -43,14 +32,22 @@ public class LoginDb {
 	 */
 	public LoginDb() throws LoginException {
 		try {
-			c = DriverManager.getConnection(CONNECTION, USR, PASS);
+			initDb();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new LoginException(e);
 		}
 	}
 
+	/**
+	 * Prüft einen Benutzer mit Passwort gegen die konfigurierte Datenbank.
+	 * <b>ACHTUNG</b>: schließt die zugehörige DB-Verbindung nach erfolgreichem Login!
+	 * @param usr der Benutzer
+	 * @param pass das Kennwort
+	 * @throws LoginException falls das Login nicht gültig ist oder die Datenbankabfrage fehlgeschlagen ist
+	 */
 	public void authenticate(String usr, String pass) throws LoginException {
+		if ( c == null ) throw new IllegalArgumentException("Login war bereits erfolgreich! Neues Objekt erzeugen!");
 		try ( PreparedStatement s = c.prepareStatement("select password from login where username = ?"); ) {
 			s.setString(1,  usr);
 			try ( ResultSet r = s.executeQuery(); ) {
@@ -60,6 +57,7 @@ public class LoginDb {
 				}
 				else
 					throw new LoginException("Unbekannter Benutzer: "+usr);
+				closeDb();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,14 +77,7 @@ public class LoginDb {
 		return Base64.getEncoder().encodeToString(messageDigest.digest());
     }
 
-    public void closeDb() {
-    	try {
-			c.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    }
-
+    /** Zum Test */
     public static final void main(String[] args) throws NoSuchAlgorithmException {
 		messageDigest = MessageDigest.getInstance("SHA-256");
     	Arrays

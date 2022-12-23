@@ -43,6 +43,7 @@ end;
 insert into kontakte ( firstname, lastname, phonenumber, email ) values  ( 'Maddel', 'Maddelsen', '', '' );
 insert into kontakte ( firstname, lastname, phonenumber, email ) values  ( 'Maddel', 'Paddel', '123456', '' );
 insert into kontakte ( firstname, lastname, phonenumber, email ) values  ( 'Kulle', 'Wolters', '6543/21', 'k.wolters@gmx.de' );
+insert into kontakte ( firstname, lastname, phonenumber, email ) values  ( 'Peter', 'Gnampf', '04123/4590', 'pg@gmx.de' );
 commit;
 select * from kontakte;
 

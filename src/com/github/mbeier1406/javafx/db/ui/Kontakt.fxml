@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mbeier1406.javafx.db.ControllerKontakt">
    <children>
@@ -36,17 +37,23 @@
                                        </children>
                                     </HBox>
                                     <Button mnemonicParsing="false" onAction="#loadContactData" text="Lade Kontakte" />
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                                       <children>
+                                          <Label text="Datenbank Status" />
+                                          <Circle fx:id="dbStatusSignal" fill="#ff1f1f" radius="14.0" stroke="BLACK" strokeType="INSIDE" />
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <padding>
                                     <Insets left="40.0" right="40.0" />
                                  </padding>
                               </VBox>
-                              <TableView prefHeight="668.0" prefWidth="673.0">
+                              <TableView fx:id="contactsTable" prefHeight="668.0" prefWidth="673.0">
                                 <columns>
-                                  <TableColumn prefWidth="136.0" text="Vorname" />
-                                  <TableColumn prefWidth="140.0" text="Nachname" />
-                                    <TableColumn prefWidth="202.0" text="Handy" />
-                                    <TableColumn prefWidth="193.0" text="E-Mail" />
+                                  <TableColumn fx:id="firstNameCol" prefWidth="136.0" text="Vorname" />
+                                  <TableColumn fx:id="lastNameCol" prefWidth="140.0" text="Nachname" />
+                                    <TableColumn fx:id="phoneNumberCol" prefWidth="202.0" text="Handy" />
+                                    <TableColumn fx:id="eMailCol" prefWidth="193.0" text="E-Mail" />
                                 </columns>
                               </TableView>
                            </children>
