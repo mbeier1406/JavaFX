@@ -27,7 +27,8 @@ public abstract class DbBasis {
 	}
 
 	protected void initDb() throws SQLException {
-		c = DriverManager.getConnection(CONNECTION, USR, PASS);		
+		c = DriverManager.getConnection(CONNECTION, USR, PASS);
+		c.setAutoCommit(false);
 	}
 
 	public void closeDb() {

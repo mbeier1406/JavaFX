@@ -24,6 +24,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+/**
+ * Controller-Klasse für {@code ui/Login.fxml}.
+ * @author mbeier
+ */
 public class ControllerLogin implements Initializable {
 
 	/** Mindestlaenge User- und Passwortfeld ist {@value} */
@@ -49,6 +53,7 @@ public class ControllerLogin implements Initializable {
 
     private LoginDb loginDb;
 
+    /** DB-Verbindung zur Authentifizierung aufbauen */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		loginButton.setDisable(true);
@@ -67,6 +72,7 @@ public class ControllerLogin implements Initializable {
 		}
 	}
 
+	/** Eingegebene Daten authentifizieren */
     @FXML
     void loginButtonAction(ActionEvent event) {
     	try {
@@ -85,6 +91,7 @@ public class ControllerLogin implements Initializable {
 		}
     }
 
+    /** login-Schalter nur aktivieren, wenn DB-Verbindung steht und Daten eingegeben wurden */
     @FXML
     void onKeyReleased(KeyEvent event) {
 		loginButton.setDisable(
@@ -103,6 +110,7 @@ public class ControllerLogin implements Initializable {
     	return tooltip;
     }
 
+    /** Bei korrektem Login Anwendung starten */
     public void displayPopUp(String msg) {
     	final var stage = new Stage();
     	final var label = new Label(msg);

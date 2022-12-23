@@ -6,7 +6,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +18,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ * Controller-Klasse für {@code ui/Kontakt.fxml}.
+ * @author mbeier
+ */
 public class ControllerKontakt implements Initializable {
 
 	/** {@linkplain Kontakt}e aus DB laden und in DB schreiben */
@@ -62,23 +65,23 @@ public class ControllerKontakt implements Initializable {
 
     @FXML
     void cancelButtonPressed(ActionEvent event) {
-    	firstNameTextField.clear();
-    	lastNameTextField.clear();
-    	phoneNumberTextField.clear();
-    	eMailTextField.clear();
-    	cancelButton.setDisable(true);
-    	createButton.setDisable(true);
+    	resetGui();
     }
 
     @FXML
     void createButtonPressed(ActionEvent event) {
+    	saveContact();
+		loadContacts();
+		resetGui();
     }
 
     @FXML
-    void eMailTextField(ActionEvent event) {
-
+    void loadContactData(ActionEvent event) {
+    	loadContacts();
+		resetGui();
     }
 
+    /** Speichern- und Abbruchschalter nur aktivieren, wenn entsprechende Felder gesetzt sind */
     @FXML
     void keyReleasedProperty(KeyEvent event) {
     	final var fStr = firstNameTextField.getText();
@@ -97,15 +100,15 @@ public class ControllerKontakt implements Initializable {
     			strNotOk(eStr, 3) );  
     }
 
-    @FXML
-    void loadContactData(ActionEvent event) {
-    	loadContacts();
-    }
-
+    /** Initialisiert die GUI und lädt die Kontakte aus der DB in die Tabelle zur Anzeige */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		createButton.setDisable(true);
 		cancelButton.setDisable(true);
+		firstNameCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("firstName"));
+		lastNameCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("lastName"));
+		phoneNumberCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("phoneNumber"));
+		eMailCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("eMail"));
 		try {
 			kontaktDAO = new KontaktDAO();
 			dbStatusSignal.setFill(Color.GREEN);
@@ -116,23 +119,44 @@ public class ControllerKontakt implements Initializable {
 		}
 	}
 
+	/** Lädt die Kontakte aus der Datenbank und zeigt sie in der Tabelle an */
 	private void loadContacts() {
 		if ( kontaktDAO != null ) {
 			try {
-				ObservableList<Kontakt> kontakte = kontaktDAO.readContacts();
-				firstNameCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("firstName"));
-				lastNameCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("lastName"));
-				phoneNumberCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("phoneNumber"));
-				eMailCol.setCellValueFactory(new PropertyValueFactory<Kontakt, String>("eMail"));
-				contactsTable.setItems(kontakte);
-				createButton.setDisable(true);
-				cancelButton.setDisable(true);
+				contactsTable.setItems(kontaktDAO.readContacts());
 			} catch (KontaktException e) {
 				e.printStackTrace();
 			}
 		}
 		else
 			System.out.println("DB nicht initialisiert!");
+	}
+
+	/** Speichert einen Kontakt aus den Eingabefeldern in der Datenbank */
+	public void saveContact() {
+		if ( kontaktDAO != null ) {
+			try {
+				kontaktDAO.insertContact(new Kontakt(
+						firstNameTextField.getText(),
+						lastNameTextField.getText(),
+						phoneNumberTextField.getText(),
+						eMailTextField.getText()));
+			} catch (KontaktException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+			System.out.println("DB nicht initialisiert!");
+	}
+
+	/** Setzt die Schaltelemente und Eingabefelder zurück */
+	public void resetGui() {
+    	firstNameTextField.clear();
+    	lastNameTextField.clear();
+    	phoneNumberTextField.clear();
+    	eMailTextField.clear();
+    	cancelButton.setDisable(true);
+    	createButton.setDisable(true);		
 	}
 
 }

@@ -14,18 +14,32 @@ import javafx.collections.ObservableList;
  */
 public class KontaktDAO extends DbBasis {
 
+	/** Die Datenbanktabelle, in der die Kotakte gespeichert werden ist {@value} */
 	public static final String TABLE = "kontakte";
 
-	public static final String SQL = "select firstName, lastName, phoneNumber, eMail from " + TABLE;
+	/** Die Abfrage zum Laden der Kontakte: {@value} */
+	public static final String SQL_QUERY = "select firstName, lastName, phoneNumber, eMail from " + TABLE;
+
+	/** Das SQL zum Speichern der Kontakte: {@value} */
+	public static final String SQL_INSERT = "insert into "+TABLE+" ( firstName, lastName, phoneNumber, eMail ) values ( ?, ?, ?, ? )";
 
 	/** Initialisiert die Datenbank */
 	public KontaktDAO() throws SQLException {
 		initDb();
 	}
 
-	public void insertContact() {
-		try () {
+	/** Einen Kontakt in die Datenbank einfügen */
+	public void insertContact(Kontakt kontakt) throws KontaktException {
+		try ( PreparedStatement ps = c.prepareStatement(SQL_INSERT) ) {
+			ps.setString(1, kontakt.firstName());
+			ps.setString(2, kontakt.lastName());
+			ps.setString(3, kontakt.phoneNumber());
+			ps.setString(4, kontakt.eMail());
+			ps.execute();
+			c.commit();
 			
+		} catch (SQLException e) {
+			throw new KontaktException(e);
 		}
 	}
 
@@ -36,7 +50,7 @@ public class KontaktDAO extends DbBasis {
 	 */
 	public ObservableList<Kontakt> readContacts() throws KontaktException {
 		final ObservableList<Kontakt> list = FXCollections.observableArrayList();
-		try ( PreparedStatement ps = c.prepareStatement(SQL);
+		try ( PreparedStatement ps = c.prepareStatement(SQL_QUERY);
 				ResultSet rs = ps.executeQuery() ) {
 			while ( rs.next() ) {
 				list.add(new Kontakt(
