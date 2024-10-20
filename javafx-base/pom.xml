@@ -11,8 +11,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>javafx-graph</artifactId>
-	<description>Darstellung verschiedener Graphen</description>
+	<artifactId>javafx-base</artifactId>
+	<description>JavaFX Grundlagen</description>
 
 	<properties>
 		<javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
@@ -29,7 +29,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>${javafx.maven.plugin.version}</version>
 				<configuration>
-					<mainClass>com.github.mbeier1406.javafx.graph.Main</mainClass>
+					<mainClass>com.github.mbeier1406.javafx.base.graphic.MainGraphics2D</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
