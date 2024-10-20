@@ -1,6 +1,7 @@
 package com.github.mbeier1406.javafx.graph;
 
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -9,6 +10,9 @@ import javafx.scene.layout.BorderPane;
 public class Controller {
 
 	@FXML
-	public BorderPane borderPane;
+	private BorderPane borderPane;
+
+	@FXML
+	private Canvas canvas;
 
 }
