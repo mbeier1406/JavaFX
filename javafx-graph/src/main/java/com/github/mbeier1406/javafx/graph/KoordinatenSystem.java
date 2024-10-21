@@ -5,6 +5,7 @@ import java.awt.Point;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -17,13 +18,6 @@ public class KoordinatenSystem {
 
 	public static final Logger LOGGER = LogManager.getLogger(KoordinatenSystem.class);
 
-	/**
-	 * Wenn {@linkplain #zeichnen()} aufgeruden wurde und die {@linkplain Konfiguration}
-	 * geändert wird, muss das alte System zunächst gelöscht werden.
-	 */
-	@SuppressWarnings("unused") // wird später verwendet
-	private boolean gezeichnet;
-
 	/** Speichert alle relavanten Daten zum Zeichnen des Koordinatensystems (Größe, Linienbreite usw.) */
 	private Konfiguration konfiguration;
 
@@ -33,54 +27,84 @@ public class KoordinatenSystem {
 	/** Informationen zur Bildschirmgröße */
 	private final Screen screen;
 
+	/** Der Untergrund zum Zeichnen */
+	private Canvas canvas;
+
+	/** Definiert die Größe der View, die Maße der Anzeige,wird durch den Screen definiert */
+	double viewWidth, viewHeight, screenWidth, screenHeight;
+
+	/** Größe des Modells, wird aus der {@linkplain #konfiguration} gelesen */
+	double modelWidth, modelHeight;
+
+	/** Umrechnungsfaktor für X und Y Model -> View */
+	double faktorXAchse, faktorYAchse;
+
 
 	public KoordinatenSystem(final Screen screen, final Controller controller) {
-		this.gezeichnet = false;
-		this.konfiguration = new Konfiguration.KonfigurationBuilder().build();
+		this(screen, controller, new Konfiguration.KonfigurationBuilder().build());
+	}
+	public KoordinatenSystem(final Screen screen, final Controller controller, final Konfiguration konfiguration) {
+		this.konfiguration = konfiguration;
 		this.screen = screen;
 		this.controller = controller;
+		this.screenWidth = this.screen.getVisualBounds().getWidth();
+		this.screenHeight = this.screen.getVisualBounds().getHeight();
+		this.viewWidth = screenWidth-screenWidth*0.005;
+		this.viewHeight = screenHeight-screenHeight*0.05;
+		canvas = this.controller.getCanvas();
+		canvas.setWidth(viewWidth);
+		canvas.setHeight(viewHeight);
 	}
+
 
 	/** Zeichnet das Koordinatensystem */
 	public void zeichnen() {
 		LOGGER.info("konfiguration={}", this.konfiguration);
-		var canvas = this.controller.getCanvas();
-		double screenWidth = this.screen.getVisualBounds().getWidth();
-		double screenHeight = this.screen.getVisualBounds().getHeight();
-		double width = screenWidth-screenWidth*0.005;	// View X
-		double height = screenHeight-screenHeight*0.05;	// View Y
-		canvas.setWidth(width);
-		canvas.setHeight(height);
 		var gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.BLACK);
-		gc.setStroke(Color.WHITE);
-		gc.setFont(new Font(gc.getFont().getName(), gc.getFont().getSize()*1.5));
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		gc.setFill(this.konfiguration.getHintergrundFarbe());
+		gc.setStroke(this.konfiguration.getZeichenFarbe());
+		gc.setFont(new Font(gc.getFont().getName(), gc.getFont().getSize()*this.konfiguration.getFontFaktor()));
+		gc.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
 		gc.setLineWidth(this.konfiguration.getLineWidth());
 
 		// Model X und Model Y
-		double modelWidth = this.konfiguration.getxBis() - this.konfiguration.getxVon();
-		double modelHeight = this.konfiguration.getyBis() - this.konfiguration.getyVon();
+		this.modelWidth = this.konfiguration.getxBis() - this.konfiguration.getxVon();
+		this.modelHeight = this.konfiguration.getyBis() - this.konfiguration.getyVon();
 
-		// Höhe der X-Achse und Weite der Y-Achse berechnen
-		double faktorXAchse = Math.abs(modelHeight / this.konfiguration.getyVon());
-		int xAchseHeight = (int) (height-height*faktorXAchse/100.0);
-		double faktorYAchse = Math.abs(modelWidth / this.konfiguration.getxVon());
-		int yAchseWidth = (int) (width*faktorYAchse/100.0);
-		LOGGER.info("Bereiche: sichtbar={}/{}; model={}/{}, faktorXAchse={}=>{}, faktoryAchse={}=>{}",
-				width, height, modelWidth, modelHeight, faktorXAchse, xAchseHeight, faktorYAchse, yAchseWidth);
+		// Umrechnungsfaktor von Punkten aus dem Modell in Punkte der View
+		this.faktorXAchse = this.viewWidth / this.modelWidth;
+		this.faktorYAchse = this.viewHeight / this.modelHeight;
+
+		LOGGER.info("Bereiche: physisch={}/{}; sichtbar={}/{}; model={}/{}, faktorXAchse={}, faktoryAchse={}",
+				screenWidth, screenHeight, viewWidth, viewHeight, modelWidth, modelHeight, faktorXAchse, faktorYAchse);
 
 		/* X-Achse von-bis */
-		Point xVon = new Point(0, xAchseHeight);
-		Point xBis = new Point((int) width, xAchseHeight);
+		Point xVon = modelToView(this.konfiguration.getxVon(), 0);
+		Point xBis = modelToView(this.konfiguration.getxBis(), 0);
+		LOGGER.info("X: {}->{}", xVon, xBis);
 		achseZeichnen(gc, "X", xVon, xBis, -10, -10, -10, 10, -30, +20);
 
 		/* Y-Achse von-bis */
-		Point yVon = new Point(yAchseWidth, (int) height);
-		Point yBis = new Point(yAchseWidth, 0);
+		Point yVon = modelToView(0, this.konfiguration.getyVon());
+		Point yBis = modelToView(0, this.konfiguration.getyBis());
+		LOGGER.info("Y: {}->{}", yVon, yBis);
 		achseZeichnen(gc, "Y", yVon, yBis, -10, +10, +10, +10, -20, +30);
 
-		this.gezeichnet = true;
+//		double X = this.konfiguration.getxVon();
+		double X = 0;
+//		double Y = Math.sin(Math.toRadians(X));
+		double Y = Math.sqrt(X);
+		double XNeu = X;
+		while ( XNeu < this.konfiguration.getxBis() ) {
+			XNeu += 1;
+//			double YNeu = Math.sin(Math.toRadians(XNeu));
+			double YNeu = Math.sqrt(XNeu);
+			Point von = modelToView(X, Y);
+			Point bis = modelToView(XNeu, YNeu);
+			gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
+			X = XNeu;
+			Y = YNeu;
+		}
 	}
 
 	/** Zeichnet und beschriftet X- oder Y-Achse */
@@ -92,10 +116,28 @@ public class KoordinatenSystem {
 		gc.strokeText(achse, bis.getX()+textX, bis.getY()+textY);
 	}
 
+	/** Berechnet, wo ein Punkt aus dem Modell auf dem Bildschirm gezeichnet werden muss */
+	public Point modelToView(double x, double y) {
+		if ( x < konfiguration.getxVon() || x > konfiguration.getxBis() || y < konfiguration.getyVon() || y > konfiguration.getyBis() )
+			throw new IllegalArgumentException("x: "+x+"->"+konfiguration.getxVon()+"/"+konfiguration.getxBis()
+				+"; y: "+y+"->"+konfiguration.getyVon()+"/"+konfiguration.getyBis());
+		return new Point(
+				(int) ((x-this.konfiguration.getxVon())*this.faktorXAchse),
+				(int) this.viewHeight - (int) ((y-this.konfiguration.getyVon())*this.faktorYAchse));
+	}
 
-	/** Speichert die Konfiguration der X/Y-Achse */
+
+	public Konfiguration getKonfiguration() {
+		return konfiguration;
+	}
+	public void setKonfiguration(Konfiguration konfiguration) {
+		this.konfiguration = konfiguration;
+	}
+
+	/** Speichert die Konfiguration des Koordinatensystems und der Anzeige */
 	public static class Konfiguration {
-		private double xVon = -500.0, xBis = 2_000.0, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0;
+		private double xVon = -500.0, xBis = 2_000.0, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
+		private Color hintergrundFarbe = Color.BLACK, zeichenFarbe = Color.WHITE;
 		public Konfiguration() { }
 		public double getxVon() {
 			return xVon;
@@ -127,29 +169,56 @@ public class KoordinatenSystem {
 		public void setLineWidth(double lineWidth) {
 			this.lineWidth = lineWidth;
 		}
-
-		@Override
-		public String toString() {
-			return "Konfiguration [xVon=" + xVon + ", xBis=" + xBis + ", yVon=" + yVon + ", yBis=" + yBis
-					+ ", lineWidth=" + lineWidth + "]";
+		public Color getHintergrundFarbe() {
+			return hintergrundFarbe;
 		}
-
+		public void setHintergrundFarbe(Color hintergrundFarbe) {
+			this.hintergrundFarbe = hintergrundFarbe;
+		}
+		public Color getZeichenFarbe() {
+			return zeichenFarbe;
+		}
+		public void setZeichenFarbe(Color zeichenFarbe) {
+			this.zeichenFarbe = zeichenFarbe;
+		}
+		public double getFontFaktor() {
+			return fontFaktor;
+		}
+		public void setFontFaktor(double fontFaktor) {
+			this.fontFaktor = fontFaktor;
+		}
 		public static class KonfigurationBuilder {
 			private Konfiguration konfiguration;
 			public KonfigurationBuilder() {
 				this.konfiguration = new Konfiguration();
 			}
-			public void withXVon(double xVon) {
+			public KonfigurationBuilder withXVon(double xVon) {
 				this.konfiguration.setxVon(xVon);
+				return this;
 			}
-			public void withXBis(double xBis) {
+			public KonfigurationBuilder withXBis(double xBis) {
 				this.konfiguration.setxBis(xBis);
+				return this;
 			}
-			public void withYVon(double yVon) {
+			public KonfigurationBuilder withYVon(double yVon) {
 				this.konfiguration.setyVon(yVon);
+				return this;
 			}
-			public void withYBis(double yBis) {
+			public KonfigurationBuilder withYBis(double yBis) {
 				this.konfiguration.setyBis(yBis);
+				return this;
+			}
+			public KonfigurationBuilder withHintergrundFarbe(Color color) {
+				this.konfiguration.setHintergrundFarbe(color);
+				return this;
+			}
+			public KonfigurationBuilder withZeichenFarbe(Color color) {
+				this.konfiguration.setZeichenFarbe(color);
+				return this;
+			}
+			public KonfigurationBuilder withFontFaktor(double fontFaktor) {
+				this.konfiguration.setFontFaktor(fontFaktor);
+				return this;
 			}
 			public Konfiguration build() {
 				return this.konfiguration;

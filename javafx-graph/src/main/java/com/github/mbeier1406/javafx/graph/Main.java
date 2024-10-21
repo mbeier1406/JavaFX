@@ -38,7 +38,13 @@ public class Main extends Application {
 		final var scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("Application.css").toExternalForm());
 
-		new KoordinatenSystem(screen, controller).zeichnen();
+		var konfiguration = new KoordinatenSystem.Konfiguration.KonfigurationBuilder()
+			.withXVon(-5)
+			.withXBis(400)
+			.withYVon(-1.5)
+			.withYBis(20)
+			.build();
+		new KoordinatenSystem(screen, controller, konfiguration).zeichnen();
 
 		primaryStage.setTitle("Graphen");
 		primaryStage.initStyle(StageStyle.DECORATED);
