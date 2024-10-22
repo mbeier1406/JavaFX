@@ -4,8 +4,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
-
 
 <BorderPane fx:id="borderPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mbeier1406.javafx.graph.Controller">
    <center>
@@ -16,6 +16,20 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <Menu mnemonicParsing="false" text="Kurven">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#vordefinierteKurveZeichnen" text="Sinus">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#vordefinierteKurveZeichnen" text="Cosinus">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    </items>
+                  </Menu>
               <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close" />
             </items>
           </Menu>

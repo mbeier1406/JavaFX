@@ -21,9 +21,6 @@ public class KoordinatenSystem {
 	/** Speichert alle relavanten Daten zum Zeichnen des Koordinatensystems (Größe, Linienbreite usw.) */
 	private Konfiguration konfiguration;
 
-	/** Der FXML-Kontroller */
-	private final Controller controller;
-
 	/** Informationen zur Bildschirmgröße */
 	private final Screen screen;
 
@@ -40,20 +37,19 @@ public class KoordinatenSystem {
 	double faktorXAchse, faktorYAchse;
 
 
-	public KoordinatenSystem(final Screen screen, final Controller controller) {
-		this(screen, controller, new Konfiguration.KonfigurationBuilder().build());
+	public KoordinatenSystem(final Screen screen, final Canvas canvas) {
+		this(screen, canvas, new Konfiguration.KonfigurationBuilder().build());
 	}
-	public KoordinatenSystem(final Screen screen, final Controller controller, final Konfiguration konfiguration) {
+	public KoordinatenSystem(final Screen screen, final Canvas canvas, final Konfiguration konfiguration) {
 		this.konfiguration = konfiguration;
 		this.screen = screen;
-		this.controller = controller;
 		this.screenWidth = this.screen.getVisualBounds().getWidth();
 		this.screenHeight = this.screen.getVisualBounds().getHeight();
 		this.viewWidth = screenWidth-screenWidth*0.005;
 		this.viewHeight = screenHeight-screenHeight*0.05;
-		canvas = this.controller.getCanvas();
-		canvas.setWidth(viewWidth);
-		canvas.setHeight(viewHeight);
+		this.canvas = canvas;
+		this.canvas.setWidth(viewWidth);
+		this.canvas.setHeight(viewHeight);
 	}
 
 
@@ -136,7 +132,7 @@ public class KoordinatenSystem {
 
 	/** Speichert die Konfiguration des Koordinatensystems und der Anzeige */
 	public static class Konfiguration {
-		private double xVon = -500.0, xBis = 2_000.0, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
+		private double xVon = -500.0, xStart = xVon, xBis = 2_000.0, xEnde = xBis, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
 		private Color hintergrundFarbe = Color.BLACK, zeichenFarbe = Color.WHITE;
 		public Konfiguration() { }
 		public double getxVon() {
@@ -187,35 +183,64 @@ public class KoordinatenSystem {
 		public void setFontFaktor(double fontFaktor) {
 			this.fontFaktor = fontFaktor;
 		}
+		public double getxStart() {
+			return xStart;
+		}
+		public void setxStart(double xStart) {
+			this.xStart = xStart;
+		}
+		public double getxEnde() {
+			return xEnde;
+		}
+		public void setxEnde(double xEnde) {
+			this.xEnde = xEnde;
+		}
 		public static class KonfigurationBuilder {
 			private Konfiguration konfiguration;
 			public KonfigurationBuilder() {
 				this.konfiguration = new Konfiguration();
 			}
+			/** Beginn der X-Achse setzen */
 			public KonfigurationBuilder withXVon(double xVon) {
 				this.konfiguration.setxVon(xVon);
 				return this;
 			}
+			/** Ab wo auf der X-Achse die Berechnung beginnt */
+			public KonfigurationBuilder withXStart(double xStart) {
+				this.konfiguration.setxStart(xStart);
+				return this;
+			}
+			/** Ende der X-Achse setzen */
 			public KonfigurationBuilder withXBis(double xBis) {
 				this.konfiguration.setxBis(xBis);
 				return this;
 			}
+			/** Ab wo auf der X-Achse die Berechnung endet */
+			public KonfigurationBuilder withXEnde(double xEnde) {
+				this.konfiguration.setxEnde(xEnde);
+				return this;
+			}
+			/** Beginn der Y-Achse setzen */
 			public KonfigurationBuilder withYVon(double yVon) {
 				this.konfiguration.setyVon(yVon);
 				return this;
 			}
+			/** Ende der Y-Achse setzen */
 			public KonfigurationBuilder withYBis(double yBis) {
 				this.konfiguration.setyBis(yBis);
 				return this;
 			}
+			/** Hintergrundfarbe des Graphen setzen */
 			public KonfigurationBuilder withHintergrundFarbe(Color color) {
 				this.konfiguration.setHintergrundFarbe(color);
 				return this;
 			}
+			/** Zeichenfarbe des Graphen und der Beschriftung setzen */
 			public KonfigurationBuilder withZeichenFarbe(Color color) {
 				this.konfiguration.setZeichenFarbe(color);
 				return this;
 			}
+			/** Faktor für die Vergrößerung der Beschriftung setzen */
 			public KonfigurationBuilder withFontFaktor(double fontFaktor) {
 				this.konfiguration.setFontFaktor(fontFaktor);
 				return this;

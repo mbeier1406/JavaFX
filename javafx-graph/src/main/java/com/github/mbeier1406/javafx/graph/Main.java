@@ -34,17 +34,9 @@ public class Main extends Application {
 		final var fxmlLoader = new FXMLLoader();
 		final Parent root = fxmlLoader.load(getClass().getResourceAsStream("Application.fxml"));
 		final var controller = (Controller) fxmlLoader.getController();
-		LOGGER.info("Starte controller {}", controller);
+		LOGGER.info("Screen {}: Starte controller {}", screen, controller);
 		final var scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("Application.css").toExternalForm());
-
-		var konfiguration = new KoordinatenSystem.Konfiguration.KonfigurationBuilder()
-			.withXVon(-5)
-			.withXBis(400)
-			.withYVon(-1.5)
-			.withYBis(20)
-			.build();
-		new KoordinatenSystem(screen, controller, konfiguration).zeichnen();
 
 		primaryStage.setTitle("Graphen");
 		primaryStage.initStyle(StageStyle.DECORATED);
