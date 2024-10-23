@@ -27,7 +27,10 @@ public class Main extends Application {
 	/** Bildschirmdefinition */
 	private Screen screen = Screen.getPrimary();
 
-	/** Öffnet das Fenster und zeichnet ein Standard-Koordinatensystem */
+	/**
+	 * Öffnet das Fenster und zeichnet ein Standard-Koordinatensystem.
+	 * @see Controller#initialize(java.net.URL, java.util.ResourceBundle)
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 

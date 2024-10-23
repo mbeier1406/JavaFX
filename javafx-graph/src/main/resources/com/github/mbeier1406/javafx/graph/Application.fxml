@@ -28,6 +28,11 @@
                               <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#vordefinierteKurveZeichnen" text="Wurzel">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                     </items>
                   </Menu>
               <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close" />

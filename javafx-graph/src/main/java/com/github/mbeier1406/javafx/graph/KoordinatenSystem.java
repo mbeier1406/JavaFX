@@ -1,6 +1,7 @@
 package com.github.mbeier1406.javafx.graph;
 
 import java.awt.Point;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +13,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 
 /**
- * Zeichnet das Koordinatensystem, auf dem später der Graph abgebildet wird.
+ * Zeichnet das Koordinatensystem, auf dem auf Anforderung der Graph abgebildet wird.
  */
 public class KoordinatenSystem {
 
@@ -53,8 +54,19 @@ public class KoordinatenSystem {
 	}
 
 
-	/** Zeichnet das Koordinatensystem */
+	/** Ohne angegebene Funktion ein leeres Koordinatensystem zeichnen */
 	public void zeichnen() {
+		zeichnen(null);
+	}
+
+	/**
+	 * Zeichnet das Koordinatensystem, und, falls der Parameter nicht <b>null</b> ist,
+	 * die entsprechende Kurve zur Funktion. Der daraus resultierende Graph wird und das
+	 * Koordinatensystem (X-/Y-Achse, Wertebereich usw.) wird über die {@linkplain #konfiguration}
+	 * gesteuert.
+	 * @param f die Kurve zum Graphen, wenn <b>null</b>, wird nur das Koordinatensystem gezeichnet
+	 */
+	public void zeichnen(final Function<Double, Double> f) {
 		LOGGER.info("konfiguration={}", this.konfiguration);
 		var gc = canvas.getGraphicsContext2D();
 		gc.setFill(this.konfiguration.getHintergrundFarbe());
@@ -86,20 +98,19 @@ public class KoordinatenSystem {
 		LOGGER.info("Y: {}->{}", yVon, yBis);
 		achseZeichnen(gc, "Y", yVon, yBis, -10, +10, +10, +10, -20, +30);
 
-//		double X = this.konfiguration.getxVon();
-		double X = 0;
-//		double Y = Math.sin(Math.toRadians(X));
-		double Y = Math.sqrt(X);
-		double XNeu = X;
-		while ( XNeu < this.konfiguration.getxBis() ) {
-			XNeu += 1;
-//			double YNeu = Math.sin(Math.toRadians(XNeu));
-			double YNeu = Math.sqrt(XNeu);
-			Point von = modelToView(X, Y);
-			Point bis = modelToView(XNeu, YNeu);
-			gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
-			X = XNeu;
-			Y = YNeu;
+		if ( f != null ) {
+			double X = this.konfiguration.getxStart();
+			double Y = f.apply(X);
+			double XNeu = X;
+			while ( XNeu+this.konfiguration.getxDelta() < this.konfiguration.getxBis() ) {
+				XNeu += this.konfiguration.getxDelta();
+				double YNeu = f.apply(XNeu);
+				Point von = modelToView(X, Y);
+				Point bis = modelToView(XNeu, YNeu);
+				gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
+				X = XNeu;
+				Y = YNeu;
+			}
 		}
 	}
 
@@ -132,7 +143,7 @@ public class KoordinatenSystem {
 
 	/** Speichert die Konfiguration des Koordinatensystems und der Anzeige */
 	public static class Konfiguration {
-		private double xVon = -500.0, xStart = xVon, xBis = 2_000.0, xEnde = xBis, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
+		private double xVon = -500.0, xStart = xVon, xBis = 2_000.0, xEnde = xBis, xDelta = 1, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
 		private Color hintergrundFarbe = Color.BLACK, zeichenFarbe = Color.WHITE;
 		public Konfiguration() { }
 		public double getxVon() {
@@ -195,6 +206,19 @@ public class KoordinatenSystem {
 		public void setxEnde(double xEnde) {
 			this.xEnde = xEnde;
 		}
+		public double getxDelta() {
+			return xDelta;
+		}
+		public void setxDelta(double xDelta) {
+			this.xDelta = xDelta;
+		}
+		@Override
+		public String toString() {
+			return "Konfiguration [xVon=" + xVon + ", xStart=" + xStart + ", xBis=" + xBis + ", xEnde=" + xEnde
+					+ ", xDelta=" + xDelta + ", yVon=" + yVon + ", yBis=" + yBis + ", lineWidth=" + lineWidth
+					+ ", fontFaktor=" + fontFaktor + ", hintergrundFarbe=" + hintergrundFarbe + ", zeichenFarbe="
+					+ zeichenFarbe + "]";
+		}
 		public static class KonfigurationBuilder {
 			private Konfiguration konfiguration;
 			public KonfigurationBuilder() {
@@ -218,6 +242,11 @@ public class KoordinatenSystem {
 			/** Ab wo auf der X-Achse die Berechnung endet */
 			public KonfigurationBuilder withXEnde(double xEnde) {
 				this.konfiguration.setxEnde(xEnde);
+				return this;
+			}
+			/** Welchen Wert im Modell auf der X-Achse ein Pixel hat */
+			public KonfigurationBuilder withXDelta(double xDelta) {
+				this.konfiguration.setxDelta(xDelta);
 				return this;
 			}
 			/** Beginn der Y-Achse setzen */
