@@ -1,6 +1,7 @@
 package com.github.mbeier1406.javafx.graph;
 
 import java.awt.Point;
+import java.text.DecimalFormat;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,9 @@ public class KoordinatenSystem {
 
 	/** Umrechnungsfaktor für X und Y Model -> View */
 	double faktorXAchse, faktorYAchse;
+
+	/** Zur Beschriftung der Achsen mit Werten */
+	final DecimalFormat df = new DecimalFormat("#.##");
 
 
 	public KoordinatenSystem(final Screen screen, final Canvas canvas) {
@@ -87,18 +91,22 @@ public class KoordinatenSystem {
 				screenWidth, screenHeight, viewWidth, viewHeight, modelWidth, modelHeight, faktorXAchse, faktorYAchse);
 
 		/* X-Achse von-bis */
-		Point xVon = modelToView(this.konfiguration.getxVon(), 0);
-		Point xBis = modelToView(this.konfiguration.getxBis(), 0);
-		LOGGER.info("X: {}->{}", xVon, xBis);
-		achseZeichnen(gc, "X", xVon, xBis, -10, -10, -10, 10, -30, +20);
+		achseZeichnen(
+				gc, "X",
+				this.konfiguration.getxVon(), 0, this.konfiguration.getxBis(), 0,
+				-10, -10, -10, 10,
+				-30, +20,
+				10, this.konfiguration.getxVon(), this.konfiguration.getxBis());
 
 		/* Y-Achse von-bis */
-		Point yVon = modelToView(0, this.konfiguration.getyVon());
-		Point yBis = modelToView(0, this.konfiguration.getyBis());
-		LOGGER.info("Y: {}->{}", yVon, yBis);
-		achseZeichnen(gc, "Y", yVon, yBis, -10, +10, +10, +10, -20, +30);
+		achseZeichnen(
+				gc, "Y",
+				0, this.konfiguration.getyVon(), 0, this.konfiguration.getyBis(),
+				-10, +10, +10, +10,
+				-20, +30,
+				10, this.konfiguration.getyVon(), this.konfiguration.getyBis());
 
-		if ( f != null ) {
+		if ( f != null ) { // wenn eine Funktion gezeichnet werden soll
 			double X = this.konfiguration.getxStart();
 			double Y = f.apply(X);
 			double XNeu = X;
@@ -114,13 +122,46 @@ public class KoordinatenSystem {
 		}
 	}
 
-	/** Zeichnet und beschriftet X- oder Y-Achse */
-	private void achseZeichnen(GraphicsContext gc, String achse, Point von, Point bis, int pfeil1X, int pfeil1Y, int pfeil2X, int pfeil2Y, int textX, int textY) {
+	/**
+	 * Zeichnet und beschriftet X- oder Y-Achse
+	 * @param gc der Zeichenuntergrund
+	 * @param achse Beschriftung der Achse
+	 * @param vonX X-Position Start der Achse
+	 * @param vonY Y-Position Start der Achse
+	 * @param bisX X-Position Ende der Achse
+	 * @param bisY Y-Position Ende der Achse
+	 * @param pfeil1X Teil 1 des Pfeils am Ende der Achse: X-Differenz zu X-Position Ende der Achse
+	 * @param pfeil1Y Teil 1 des Pfeils am Ende der Achse: Y-Differenz zu Y-Position Ende der Achse
+	 * @param pfeil2X Teil 2 des Pfeils am Ende der Achse: X-Differenz zu X-Position Ende der Achse
+	 * @param pfeil2Y Teil 2 des Pfeils am Ende der Achse: Y-Differenz zu Y-Position Ende der Achse
+	 * @param textX Beschriftung am Ende der Achse: X-Differenz
+	 * @param textY Beschriftung am Ende der Achse: Y-Differenz
+	 * @param anzStriche wie viele Striche zur Anzeige der Werte auf der Achse gezeichnet werden sollen
+	 * @param stricheVon Startpunkt der Achse (X/Y) zur Berechnung der Distanz zwischen den Strichen
+	 * @param stricheBis
+	 */
+	private void achseZeichnen(
+			GraphicsContext gc, String achse,
+			double vonX, double vonY,
+			double bisX, double bisY,
+			int pfeil1X, int pfeil1Y, int pfeil2X, int pfeil2Y, int textX, int textY,
+			int anzStriche, double stricheVon, double stricheBis) {
+		Point von = modelToView(vonX, vonY);
+		Point bis = modelToView(bisX, bisY);
 		LOGGER.info("{}-Achse {} {}", achse, von, bis);
-		gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
-		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil1X, bis.getY()+pfeil1Y);
-		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil2X, bis.getY()+pfeil2Y);
-		gc.strokeText(achse, bis.getX()+textX, bis.getY()+textY);
+		gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY()); // Die X-/Y-Achse zeichnen
+		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil1X, bis.getY()+pfeil1Y); // Den Pfeil am Ende
+		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil2X, bis.getY()+pfeil2Y); // der Achse zeichnen
+		gc.strokeText(achse, bis.getX()+textX, bis.getY()+textY); // Beschriftung der Achse mit "X" oder "Y"
+		int distanzStriche = (int) (stricheBis-stricheVon) / anzStriche; // Distanz der Markierungen auf der Achse
+		if ( achse.equals("X") ) {
+			for ( double position = distanzStriche; position < bisX; position += distanzStriche ) {
+				Point strichVon = modelToView(position, 0);
+				Point strichBis = modelToView(position, -0.3);
+				gc.strokeLine(strichVon.getX(), strichVon.getY(), strichBis.getX(), strichBis.getY());
+				gc.strokeText(df.format(position), strichVon.getX()+3, bis.getY()+20); // Beschriftung des aktuellen Werts auf der Achse
+			}
+		}
 	}
 
 	/** Berechnet, wo ein Punkt aus dem Modell auf dem Bildschirm gezeichnet werden muss */
