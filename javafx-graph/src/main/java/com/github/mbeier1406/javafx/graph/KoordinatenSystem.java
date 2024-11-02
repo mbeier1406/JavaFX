@@ -2,7 +2,6 @@ package com.github.mbeier1406.javafx.graph;
 
 import java.awt.Point;
 import java.text.DecimalFormat;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
@@ -97,13 +96,7 @@ public class KoordinatenSystem {
 				this.konfiguration.getxVon(), 0, this.konfiguration.getxBis(), 0,
 				-10, -10, -10, 10,
 				-30, +20,
-				10, this.konfiguration.getxVon(), this.konfiguration.getxBis(),
-				new StrichBerechnung[] {
-						new StrichBerechnung((position, bisMax) -> position < bisMax, this.konfiguration.getxBis(), 1),
-						new StrichBerechnung((position, bisMin) -> position > bisMin, this.konfiguration.getxVon(), -1)},
-				position -> modelToView(position, 0),
-				position -> modelToView(position, -0.3),
-				3, 20);
+				10, this.konfiguration.getxVon(), this.konfiguration.getxBis());
 
 		/* Y-Achse von-bis */
 		achseZeichnen(
@@ -111,13 +104,7 @@ public class KoordinatenSystem {
 				0, this.konfiguration.getyVon(), 0, this.konfiguration.getyBis(),
 				-10, +10, +10, +10,
 				-20, +30,
-				10, this.konfiguration.getyVon(), this.konfiguration.getyBis(),
-				new StrichBerechnung[] {
-						new StrichBerechnung((position, bisMax) -> position < bisMax, this.konfiguration.getyBis(), 1),
-						new StrichBerechnung((position, bisMin) -> position > bisMin, this.konfiguration.getyVon(), -1)},
-				position -> modelToView(0, position),
-				position -> modelToView(-1.3, position),
-				-15, -3);
+				10, this.konfiguration.getyVon(), this.konfiguration.getyBis());
 
 		if ( f != null ) { // wenn eine Funktion gezeichnet werden soll
 			double X = this.konfiguration.getxStart();
@@ -158,11 +145,7 @@ public class KoordinatenSystem {
 			double vonX, double vonY,
 			double bisX, double bisY,
 			int pfeil1X, int pfeil1Y, int pfeil2X, int pfeil2Y, int textX, int textY,
-			int anzStriche, double stricheVon, double stricheBis,
-			final StrichBerechnung[] strichBerechnungListe,
-			final Function<Double, Point> fStrichVon,
-			final Function<Double, Point> fStrichBis,
-			double strichBeschriftungDeltaX, double strichBeschriftungDeltaY) {
+			int anzStriche, double stricheVon, double stricheBis) {
 		Point von = modelToView(vonX, vonY);
 		Point bis = modelToView(bisX, bisY);
 		LOGGER.info("{}-Achse {} {}", achse, von, bis);
@@ -170,16 +153,16 @@ public class KoordinatenSystem {
 		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil1X, bis.getY()+pfeil1Y); // Den Pfeil am Ende
 		gc.strokeLine(bis.getX(), bis.getY(), bis.getX()+pfeil2X, bis.getY()+pfeil2Y); // der Achse zeichnen
 		gc.strokeText(achse, bis.getX()+textX, bis.getY()+textY); // Beschriftung der Achse mit "X" oder "Y"
-		double distanzStriche = (stricheBis-stricheVon) / anzStriche; // Distanz der Markierungen auf der Achse
-		for ( StrichBerechnung strichBerechnung : strichBerechnungListe )
-			for ( double position = distanzStriche*strichBerechnung.richtung(); strichBerechnung.f().apply(position, strichBerechnung.bis()); position += distanzStriche*strichBerechnung.richtung() ) {
-				Point strichVon = fStrichVon.apply(position);
-				Point strichBis = fStrichBis.apply(position);
+		int distanzStriche = (int) (stricheBis-stricheVon) / anzStriche; // Distanz der Markierungen auf der Achse
+		if ( achse.equals("X") ) {
+			for ( double position = distanzStriche; position < bisX; position += distanzStriche ) {
+				Point strichVon = modelToView(position, 0);
+				Point strichBis = modelToView(position, -0.3);
 				gc.strokeLine(strichVon.getX(), strichVon.getY(), strichBis.getX(), strichBis.getY());
-				gc.strokeText(df.format(position), strichBis.getX()+strichBeschriftungDeltaX, strichBis.getY()+strichBeschriftungDeltaY); // Beschriftung des aktuellen Werts auf der Achse
+				gc.strokeText(df.format(position), strichVon.getX()+3, bis.getY()+20); // Beschriftung des aktuellen Werts auf der Achse
 			}
+		}
 	}
-	private record StrichBerechnung(BiFunction<Double, Double, Boolean> f, double bis, int richtung) {};
 
 	/** Berechnet, wo ein Punkt aus dem Modell auf dem Bildschirm gezeichnet werden muss */
 	public Point modelToView(double x, double y) {
