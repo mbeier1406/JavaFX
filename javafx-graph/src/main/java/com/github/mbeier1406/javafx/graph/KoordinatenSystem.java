@@ -38,13 +38,13 @@ public class KoordinatenSystem {
 	/** Umrechnungsfaktor für X und Y Model -> View */
 	double faktorXAchse, faktorYAchse;
 
-	/** Zur Beschriftung der Achsen mit Werten */
-	final DecimalFormat df = new DecimalFormat("#."+"#".repeat(5));
 
-
+	/**	Richtet das Koordinatensystem mit der Standardkonfiguration ein */
 	public KoordinatenSystem(final Screen screen, final Canvas canvas) {
 		this(screen, canvas, new Konfiguration.KonfigurationBuilder().build());
 	}
+
+	/**	Richtet das Koordinatensystem mit einer eigenen {@linkplain Konfiguration} ein */
 	public KoordinatenSystem(final Screen screen, final Canvas canvas, final Konfiguration konfiguration) {
 		this.konfiguration = konfiguration;
 		this.screen = screen;
@@ -102,7 +102,8 @@ public class KoordinatenSystem {
 						new StrichBerechnung((position, bisMin) -> position > bisMin, this.konfiguration.getxVon(), -1)},
 				position -> modelToView(position, 0),
 				position -> modelToView(position, -0.3),
-				3, 20);
+				3, 20,
+				this.konfiguration.getDecimalFormat());
 
 		/* Y-Achse von-bis */
 		achseZeichnen(
@@ -116,7 +117,8 @@ public class KoordinatenSystem {
 						new StrichBerechnung((position, bisMin) -> position > bisMin, this.konfiguration.getyVon(), -1)},
 				position -> modelToView(0, position),
 				position -> modelToView(-1.3, position),
-				-15, -3);
+				-15, -3,
+				this.konfiguration.getDecimalFormat());
 
 		if ( f != null ) { // wenn eine Funktion gezeichnet werden soll
 			double X = this.konfiguration.getxStart();
@@ -161,7 +163,8 @@ public class KoordinatenSystem {
 			final StrichBerechnung[] strichBerechnungListe,
 			final Function<Double, Point> fStrichVon,
 			final Function<Double, Point> fStrichBis,
-			double strichBeschriftungDeltaX, double strichBeschriftungDeltaY) {
+			double strichBeschriftungDeltaX, double strichBeschriftungDeltaY,
+			final DecimalFormat df) {
 		Point von = modelToView(vonX, vonY);
 		Point bis = modelToView(bisX, bisY);
 		LOGGER.info("{}-Achse {} {}", achse, von, bis);
