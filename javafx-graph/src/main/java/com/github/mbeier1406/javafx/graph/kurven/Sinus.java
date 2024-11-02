@@ -2,8 +2,8 @@ package com.github.mbeier1406.javafx.graph.kurven;
 
 import java.util.function.Function;
 
-import com.github.mbeier1406.javafx.graph.KoordinatenSystem.Konfiguration;
-import com.github.mbeier1406.javafx.graph.KoordinatenSystem.Konfiguration.KonfigurationBuilder;
+import com.github.mbeier1406.javafx.graph.Konfiguration;
+import com.github.mbeier1406.javafx.graph.Konfiguration.KonfigurationBuilder;
 
 /**
  * Graph für die Sinus-Funktion.

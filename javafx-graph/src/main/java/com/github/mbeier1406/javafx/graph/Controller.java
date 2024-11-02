@@ -49,7 +49,7 @@ public class Controller implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("Controller wird initialisiert: url={}; resouces={}", location, resources);
-		var konfiguration = new KoordinatenSystem.Konfiguration.KonfigurationBuilder()
+		var konfiguration = new Konfiguration.KonfigurationBuilder()
 				.withXVon(-5)
 				.withXBis(400)
 				.withYVon(-1.5)

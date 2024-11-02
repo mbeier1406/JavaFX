@@ -2,7 +2,7 @@ package com.github.mbeier1406.javafx.graph.kurven;
 
 import java.util.function.Function;
 
-import com.github.mbeier1406.javafx.graph.KoordinatenSystem.Konfiguration;
+import com.github.mbeier1406.javafx.graph.Konfiguration;
 
 /**
  * Graph für die Cosinus-Funktion (Radiant).
