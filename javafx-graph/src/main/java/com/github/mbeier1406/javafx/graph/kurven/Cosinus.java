@@ -14,7 +14,7 @@ public class Cosinus implements Kurvendefinition {
 	/** {@inheritDoc} */
 	@Override
 	public Function<Double, Double> getFunction() {
-		return x -> Math.cos(x);
+		return x -> Math.cos(Math.toRadians(x));
 	}
 
 	/** {@inheritDoc} */

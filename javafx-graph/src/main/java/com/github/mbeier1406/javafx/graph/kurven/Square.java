@@ -6,27 +6,27 @@ import com.github.mbeier1406.javafx.graph.Konfiguration;
 import com.github.mbeier1406.javafx.graph.Konfiguration.KonfigurationBuilder;
 
 /**
- * Graph für die Wurzel-Funktion.
+ * Graph für die Quadrat-Funktion.
  */
-@Kurve(name = "Wurzel")
-public class Sqrt implements Kurvendefinition {
+@Kurve(name = "Quadrat")
+public class Square implements Kurvendefinition {
 
 	/** {@inheritDoc} */
 	@Override
 	public Function<Double, Double> getFunction() {
-		return Math::sqrt;
+		return x -> Math.pow(x, 2);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Konfiguration getKonfiguration() {
 		return new KonfigurationBuilder()
-				.withXVon(-15)	// Hier das
-				.withYVon(-1.5)	// Korrdinatensystem
-				.withXBis(400)	// einstellen
-				.withYBis(20)	// Wurzel aus 400
-				.withXStart(0) // Wurzel aus negativen Zahlen nicht erlaubt
-				.withAnzahlEinheitenStricheXAchse(15) // Anzahl Einheitenstriche X-Achse
+				.withXVon(-25)	// Hier das
+				.withYVon(-75)	// Korrdinatensystem
+				.withXBis(25)	// einstellen
+				.withYBis(650)	// Wurzel aus 400
+				.withXStart(-25)
+				.withXEnde(10)
 				.build();
 	}
 

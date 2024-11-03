@@ -50,7 +50,7 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("Controller wird initialisiert: url={}; resouces={}", location, resources);
 		var konfiguration = new Konfiguration.KonfigurationBuilder()
-				.withXVon(-5)
+				.withXVon(-25)
 				.withXBis(400)
 				.withYVon(-1.5)
 				.withYBis(20)

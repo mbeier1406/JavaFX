@@ -15,19 +15,19 @@ public class Sinus implements Kurvendefinition {
 	/** {@inheritDoc} */
 	@Override
 	public Function<Double, Double> getFunction() {
-		return Math::sin;
+		return x -> Math.sin(Math.toRadians(x));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Konfiguration getKonfiguration() {
 		return new KonfigurationBuilder()
-				.withXVon(-10)	// Hier das
+				.withXVon(-360)	// Hier das
 				.withYVon(-1.5)	// Korrdinatensystem
-				.withXBis(10)	// einstellen
+				.withXBis(360)	// einstellen
 				.withYBis(1.5)
-				.withXStart(-10) // Wertebereich
-				.withXEnde(10)
+				.withXStart(-360) // Wertebereich
+				.withXEnde(360)
 				.withXDelta(0.1) // Schrittweite X-Achse
 				.build();
 	}

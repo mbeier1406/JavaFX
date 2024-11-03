@@ -10,7 +10,9 @@ import javafx.scene.paint.Color;
 public class Konfiguration {
 
 	/* Standard-Konfiguration definieren */
-	private double xVon = -500.0, xStart = xVon, xBis = 2_000.0, xEnde = xBis, xDelta = 1, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0, fontFaktor = 1.5;
+	private double xVon = -500.0, xStart = xVon, xBis = 2_000.0, xEnde = xBis, xDelta = 1, yVon = -500.0, yBis = 2_000.0, lineWidth = 1.0,
+			fontFaktor = 1.5, strichBeschriftungXAchseFaktorX = 0, strichBeschriftungXAchseFaktorY = 12, strichBeschriftungYAchseFaktorX = -8, strichBeschriftungYAchseFaktorY = 12;
+	private int anzahlEinheitenStricheXAchse = 10, anzahlEinheitenStricheYAchse = 8;
 	private DecimalFormat df = new DecimalFormat("#.##");
 	private Color hintergrundFarbe = Color.BLACK, zeichenFarbe = Color.WHITE;
 	public Konfiguration() { }
@@ -86,12 +88,53 @@ public class Konfiguration {
 	public void setDecimalFormat(String format) {
 		this.df = new DecimalFormat(format);
 	}
+	public double getStrichBeschriftungXAchseFaktorX() {
+		return strichBeschriftungXAchseFaktorX;
+	}
+	public void setStrichBeschriftungXAchseFaktorX(double strichBeschriftungXAchseFaktorX) {
+		this.strichBeschriftungXAchseFaktorX = strichBeschriftungXAchseFaktorX;
+	}
+	public double getStrichBeschriftungXAchseFaktorY() {
+		return strichBeschriftungXAchseFaktorY;
+	}
+	public void setStrichBeschriftungXAchseFaktorY(double strichBeschriftungXAchseFaktorY) {
+		this.strichBeschriftungXAchseFaktorY = strichBeschriftungXAchseFaktorY;
+	}
+	public double getStrichBeschriftungYAchseFaktorX() {
+		return strichBeschriftungYAchseFaktorX;
+	}
+	public void setStrichBeschriftungYAchseFaktorX(double strichBeschriftungYAchseFaktorX) {
+		this.strichBeschriftungYAchseFaktorX = strichBeschriftungYAchseFaktorX;
+	}
+	public double getStrichBeschriftungYAchseFaktorY() {
+		return strichBeschriftungYAchseFaktorY;
+	}
+	public void setStrichBeschriftungYAchseFaktorY(double strichBeschriftungYAchseFaktorY) {
+		this.strichBeschriftungYAchseFaktorY = strichBeschriftungYAchseFaktorY;
+	}
+	public int getAnzahlEinheitenStricheXAchse() {
+		return anzahlEinheitenStricheXAchse;
+	}
+	public void setAnzahlEinheitenStricheXAchse(int anzahlEinheitenStricheXAchse) {
+		this.anzahlEinheitenStricheXAchse = anzahlEinheitenStricheXAchse;
+	}
+	public int getAnzahlEinheitenStricheYAchse() {
+		return anzahlEinheitenStricheYAchse;
+	}
+	public void setAnzahlEinheitenStricheYAchse(int anzahlEinheitenStricheYAchse) {
+		this.anzahlEinheitenStricheYAchse = anzahlEinheitenStricheYAchse;
+	}
 	@Override
 	public String toString() {
 		return "Konfiguration [xVon=" + xVon + ", xStart=" + xStart + ", xBis=" + xBis + ", xEnde=" + xEnde
 				+ ", xDelta=" + xDelta + ", yVon=" + yVon + ", yBis=" + yBis + ", lineWidth=" + lineWidth
-				+ ", fontFaktor=" + fontFaktor + ", DecimalFormat=" + df
-				+ ", hintergrundFarbe=" + hintergrundFarbe + ", zeichenFarbe=" + zeichenFarbe + "]";
+				+ ", fontFaktor=" + fontFaktor + ", strichBeschriftungXAchseFaktorX=" + strichBeschriftungXAchseFaktorX
+				+ ", strichBeschriftungXAchseFaktorY=" + strichBeschriftungXAchseFaktorY
+				+ ", strichBeschriftungYAchseFaktorX=" + strichBeschriftungYAchseFaktorX
+				+ ", strichBeschriftungYAchseFaktorY=" + strichBeschriftungYAchseFaktorY
+				+ ", anzahlEinheitenStricheXAchse=" + anzahlEinheitenStricheXAchse + ", anzahlEinheitenStricheYAchse="
+				+ anzahlEinheitenStricheYAchse + ", df=" + df + ", hintergrundFarbe=" + hintergrundFarbe
+				+ ", zeichenFarbe=" + zeichenFarbe + "]";
 	}
 	public static class KonfigurationBuilder {
 		private Konfiguration konfiguration;
@@ -151,6 +194,36 @@ public class Konfiguration {
 		/** {@linkplain DecimalFormat} (Nachkommastellen usw.) für die Beschriftung der Achsen setzen */
 		public KonfigurationBuilder withDecimalFormat(String format) {
 			this.konfiguration.setDecimalFormat(format);
+			return this;
+		}
+		/** Setzt den Faktor, um den die Beschriftung der Einheit auf der X-Achse gegenüber dem Strich nach links/rechts verschoben wird */
+		public KonfigurationBuilder withStrichBeschriftungXAchseFaktorX(double strichBeschriftungXAchseFaktorX) {
+			this.konfiguration.setStrichBeschriftungXAchseFaktorX(strichBeschriftungXAchseFaktorX);
+			return this;
+		}
+		/** Setzt den Faktor, um den die Beschriftung der Einheit auf der X-Achse gegenüber dem Strich nach oben/unten verschoben wird */
+		public KonfigurationBuilder withStrichBeschriftungXAchseFaktorY(double strichBeschriftungXAchseFaktorY) {
+			this.konfiguration.setStrichBeschriftungXAchseFaktorY(strichBeschriftungXAchseFaktorY);
+			return this;
+		}
+		/** Setzt den Faktor, um den die Beschriftung der Einheit auf der Y-Achse gegenüber dem Strich nach links/rechts verschoben wird */
+		public KonfigurationBuilder withStrichBeschriftungYAchseFaktorX(double strichBeschriftungYAchseFaktorX) {
+			this.konfiguration.setStrichBeschriftungYAchseFaktorX(strichBeschriftungYAchseFaktorX);
+			return this;
+		}
+		/** Setzt den Faktor, um den die Beschriftung der Einheit auf der Y-Achse gegenüber dem Strich nach oben/unten verschoben wird */
+		public KonfigurationBuilder withStrichBeschriftungYAchseFaktorY(double strichBeschriftungYAchseFaktorY) {
+			this.konfiguration.setStrichBeschriftungYAchseFaktorY(strichBeschriftungYAchseFaktorY);
+			return this;
+		}
+		/** Wie viele EinheitenStriche auf der X-Achse gesetzt werdne sollen */
+		public KonfigurationBuilder withAnzahlEinheitenStricheXAchse(int anzahlEinheitenStricheXAchse) {
+			this.konfiguration.setAnzahlEinheitenStricheXAchse(anzahlEinheitenStricheXAchse);
+			return this;
+		}
+		/** Wie viele EinheitenStriche auf der Y-Achse gesetzt werdne sollen */
+		public KonfigurationBuilder withAnzahlEinheitenStricheYAchse(int anzahlEinheitenStricheYAchse) {
+			this.konfiguration.setAnzahlEinheitenStricheYAchse(anzahlEinheitenStricheYAchse);
 			return this;
 		}
 		public Konfiguration build() {
