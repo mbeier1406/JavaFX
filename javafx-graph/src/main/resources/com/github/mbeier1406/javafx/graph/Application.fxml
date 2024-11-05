@@ -45,7 +45,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#konfigurationDefinieren" text="Konfiguration definieren" />
+                  <MenuItem mnemonicParsing="false" onAction="#konfigurationLoeschen" text="Konfiguration löschen" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

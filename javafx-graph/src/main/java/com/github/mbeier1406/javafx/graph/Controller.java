@@ -2,6 +2,7 @@ package com.github.mbeier1406.javafx.graph;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +46,12 @@ public class Controller implements Initializable {
 	@FXML
 	private Canvas canvas;
 
+	/**
+	 * Wenn eine eigene Funktion definiert wird oder nicht die Standardkonfiguration in
+	 * {@linkplain #vordefinierteKurveZeichnen(ActionEvent)} verwendt werden soll.
+	 */
+	private Optional<Konfiguration> eigeneKonfiguration = Optional.empty();
+
 	/** Zum Start wird ein Korrdinatensystem ohne Kurve angezeigt */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -66,6 +73,26 @@ public class Controller implements Initializable {
     }
 
 	/**
+	 * Definiert eine eigene Konfiguration zur Anzeige eines Graphen.
+	 * @see #eigeneKonfiguration
+	 */
+    @FXML
+    void konfigurationDefinieren(ActionEvent event) {
+    	LOGGER.info("Eigene Konfiguration wird erstellt.");
+    	this.eigeneKonfiguration = Optional.empty();
+    }
+
+	/**
+	 * Wieder die Standardkonfiguration benutzen.
+	 * @see #eigeneKonfiguration
+	 */
+    @FXML
+    void konfigurationLoeschen(ActionEvent event) {
+    	LOGGER.info("Standardkonfiguration wird gewählt.");
+    	this.eigeneKonfiguration = Optional.empty();
+    }
+
+	/**
 	 * Vordefinierte Kurve zeichnen: der Text des Menüeintrags wird
 	 * verwendet, um die entsprechende Defintion für den Graphen
 	 * aus {@linkplain #kurven} zu lesen.
@@ -76,7 +103,10 @@ public class Controller implements Initializable {
 		final var kurvendefinition = kurven.get(kurve);
 		LOGGER.trace("kurve={}", kurve);
 		if ( kurvendefinition != null )
-			new KoordinatenSystem(screen, this.canvas, kurvendefinition.getKonfiguration())
+			new KoordinatenSystem(
+					this.screen,
+					this.canvas,
+					eigeneKonfiguration.orElseGet(kurvendefinition::getKonfiguration))
 				.zeichnen(kurvendefinition.getFunction());			
     }
 
