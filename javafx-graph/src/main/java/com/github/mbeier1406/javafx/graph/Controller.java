@@ -1,5 +1,6 @@
 package com.github.mbeier1406.javafx.graph;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
@@ -15,11 +16,16 @@ import com.github.mbeier1406.javafx.graph.kurven.Kurvendefinition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 /**
  * Controller für {@code Application.fxml}.
@@ -79,6 +85,22 @@ public class Controller implements Initializable {
     @FXML
     void konfigurationDefinieren(ActionEvent event) {
     	LOGGER.info("Eigene Konfiguration wird erstellt.");
+    	String fxml = "Konfiguration.fxml";
+    	final var fxmlLoader = new FXMLLoader();
+    	fxmlLoader.setLocation(getClass().getResource(fxml));
+		try {
+			fxmlLoader.load();
+		} catch (IOException e) {
+			LOGGER.error("FXML kann nicht geladen werden: "+fxml);
+			return;
+		}
+		// KonfigurationController konfigurationController = (KonfigurationController) fxmlLoader.getController();
+		Scene scene = new Scene(fxmlLoader.getRoot());
+		Stage stage = new Stage();
+		stage.setTitle("Konfiguration definieren");
+		stage.setScene(scene);
+		stage.show();
+
     	this.eigeneKonfiguration = Optional.empty();
     }
 
@@ -107,7 +129,14 @@ public class Controller implements Initializable {
 					this.screen,
 					this.canvas,
 					eigeneKonfiguration.orElseGet(kurvendefinition::getKonfiguration))
-				.zeichnen(kurvendefinition.getFunction());			
+				.zeichnen(kurvendefinition.getFunction());
+		else {
+			var alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Interner Fehler");
+			alert.setHeaderText("Kurvendefinition fehlt!");
+			alert.setContentText("Für diese Bezeichnung gibt es keine Kurve: "+kurve);
+			alert.showAndWait();
+		}
     }
 
 }
