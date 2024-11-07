@@ -1,5 +1,8 @@
 package com.github.mbeier1406.javafx.graph;
 
+import static com.github.mbeier1406.javafx.graph.Commons.INTERER_FEHLER;
+import static com.github.mbeier1406.javafx.graph.Commons.alertShowAndWait;
+
 import java.awt.Desktop;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,9 +36,20 @@ public class Main extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		final String fxml = "Application.fxml";
 		final var fxmlLoader = new FXMLLoader();
-		final Parent root = fxmlLoader.load(getClass().getResourceAsStream("Application.fxml"));
+		Parent root = null;
+		try {
+			root = fxmlLoader.load(getClass().getResourceAsStream(fxml));
+		}
+		catch ( Exception e ) {
+			LOGGER.error("FXML kann nicht geladen werden: {}", fxml, e);
+			alertShowAndWait(
+					INTERER_FEHLER,
+					"FXML nicht geladen!",
+					"Datei ist '"+fxml+"'.");
+			return;
+		}
 		final var controller = (Controller) fxmlLoader.getController();
 		LOGGER.info("Screen {}: Starte controller {}", screen, controller);
 		final var scene = new Scene(root);

@@ -1,6 +1,8 @@
 package com.github.mbeier1406.javafx.graph;
 
-import java.io.IOException;
+import static com.github.mbeier1406.javafx.graph.Commons.INTERER_FEHLER;
+import static com.github.mbeier1406.javafx.graph.Commons.alertShowAndWait;
+
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
@@ -20,8 +22,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
@@ -90,8 +90,12 @@ public class Controller implements Initializable {
     	fxmlLoader.setLocation(getClass().getResource(fxml));
 		try {
 			fxmlLoader.load();
-		} catch (IOException e) {
-			LOGGER.error("FXML kann nicht geladen werden: "+fxml);
+		} catch ( Exception e ) {
+			LOGGER.error("FXML kann nicht geladen werden: {}", fxml, e);
+			alertShowAndWait(
+					INTERER_FEHLER,
+					"FXML nicht geladen!",
+					"Datei ist '"+fxml+"'.");
 			return;
 		}
 		// KonfigurationController konfigurationController = (KonfigurationController) fxmlLoader.getController();
@@ -99,7 +103,8 @@ public class Controller implements Initializable {
 		Stage stage = new Stage();
 		stage.setTitle("Konfiguration definieren");
 		stage.setScene(scene);
-		stage.show();
+		stage.showAndWait();
+		stage.requestFocus();
 
     	this.eigeneKonfiguration = Optional.empty();
     }
@@ -130,13 +135,11 @@ public class Controller implements Initializable {
 					this.canvas,
 					eigeneKonfiguration.orElseGet(kurvendefinition::getKonfiguration))
 				.zeichnen(kurvendefinition.getFunction());
-		else {
-			var alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Interner Fehler");
-			alert.setHeaderText("Kurvendefinition fehlt!");
-			alert.setContentText("Für diese Bezeichnung gibt es keine Kurve: "+kurve);
-			alert.showAndWait();
-		}
+		else
+			alertShowAndWait(
+					INTERER_FEHLER,
+					"Kurvendefinition fehlt!",
+					"Für diese Bezeichnung gibt es keine Kurve: "+kurve);
     }
 
 }
