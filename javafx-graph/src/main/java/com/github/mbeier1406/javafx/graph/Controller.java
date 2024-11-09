@@ -56,7 +56,7 @@ public class Controller implements Initializable {
 	 * Wenn eine eigene Funktion definiert wird oder nicht die Standardkonfiguration in
 	 * {@linkplain #vordefinierteKurveZeichnen(ActionEvent)} verwendt werden soll.
 	 */
-	private Optional<Konfiguration> eigeneKonfiguration = Optional.empty();
+	private Optional<Konfiguration> konfiguration = Optional.empty();
 
 	/** Zum Start wird ein Korrdinatensystem ohne Kurve angezeigt */
 	@Override
@@ -80,7 +80,7 @@ public class Controller implements Initializable {
 
 	/**
 	 * Definiert eine eigene Konfiguration zur Anzeige eines Graphen.
-	 * @see #eigeneKonfiguration
+	 * @see #konfiguration
 	 */
     @FXML
     void konfigurationDefinieren(ActionEvent event) {
@@ -98,25 +98,25 @@ public class Controller implements Initializable {
 					"Datei ist '"+fxml+"'.");
 			return;
 		}
-		// KonfigurationController konfigurationController = (KonfigurationController) fxmlLoader.getController();
+		var konfigurationController = (KonfigurationController) fxmlLoader.getController();
+		konfigurationController.setKonfiguration(konfiguration);
 		Scene scene = new Scene(fxmlLoader.getRoot());
 		Stage stage = new Stage();
 		stage.setTitle("Konfiguration definieren");
 		stage.setScene(scene);
 		stage.showAndWait();
 		stage.requestFocus();
-
-    	this.eigeneKonfiguration = Optional.empty();
+    	this.konfiguration = konfigurationController.getKonfiguration();
     }
 
 	/**
 	 * Wieder die Standardkonfiguration benutzen.
-	 * @see #eigeneKonfiguration
+	 * @see #konfiguration
 	 */
     @FXML
     void konfigurationLoeschen(ActionEvent event) {
     	LOGGER.info("Standardkonfiguration wird gewählt.");
-    	this.eigeneKonfiguration = Optional.empty();
+    	this.konfiguration = Optional.empty();
     }
 
 	/**
@@ -133,7 +133,7 @@ public class Controller implements Initializable {
 			new KoordinatenSystem(
 					this.screen,
 					this.canvas,
-					eigeneKonfiguration.orElseGet(kurvendefinition::getKonfiguration))
+					konfiguration.orElseGet(kurvendefinition::getKonfiguration))
 				.zeichnen(kurvendefinition.getFunction());
 		else
 			alertShowAndWait(
