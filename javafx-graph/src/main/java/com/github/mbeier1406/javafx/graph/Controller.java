@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +37,13 @@ public class Controller implements Initializable {
 
 	private final Screen screen = Screen.getPrimary();
 
+	@FXML
+	private BorderPane borderPane;
+
+	@FXML
+	private Canvas canvas;
+
+
 	/**
 	 * Enthält die Kurvendefinition (Einstellungen für das Koordinatensystem, Wertebereich der
 	 * anzuzeigenden Kurve auf der X-Achse sowie die darzustellende Funktion) wobei der Key
@@ -46,17 +54,25 @@ public class Controller implements Initializable {
 	 */
 	private final Map<String, Kurvendefinition> kurven = KurvenFactory.getKurven();
 
-	@FXML
-	private BorderPane borderPane;
-
-	@FXML
-	private Canvas canvas;
-
 	/**
 	 * Wenn eine eigene Funktion definiert wird oder nicht die Standardkonfiguration in
 	 * {@linkplain #vordefinierteKurveZeichnen(ActionEvent)} verwendt werden soll.
+	 * Die Konfiguration wird in{@linkplain KoordinatenSystem} benötigt, um X- und Y-Achse
+	 * auszurichten und zu beschriften usw. und musss zuvor gesetzt werden.
+	 * {@linkplain Optional#empty()} bedeutet entsprechend, dass entweder die Standard-
+	 * konfiguration oder die dervordefinierten Kurve gewählt wird.
+	 * Falls bereits {@linkplain #funktion ein Graph} dargestellt wird, wird die Konfiguration
+	 * auf diesen angewendet.
 	 */
 	private Optional<Konfiguration> konfiguration = Optional.empty();
+
+	/**
+	 * Enthält die Funktion für die aktuell dargestellte Kurve.
+	 * Ist diese {@linkplain Optional#empty()}, so wird ein leeres Koordinatensystem
+	 * mit der aktuellen {@linkplain #konfiguration Konfiguration} gezeichnet.
+	 */
+	private Optional<Function<Double, Double>> funktion = Optional.empty();
+
 
 	/** Zum Start wird ein Korrdinatensystem ohne Kurve angezeigt */
 	@Override
@@ -71,7 +87,18 @@ public class Controller implements Initializable {
 		new KoordinatenSystem(screen, this.canvas, konfiguration.get()).zeichnen();
 	}
 
-	/** Anwendung beenden */
+	/** Es wird wieder ein leeres Koordinatensystem mit der aktuellen oder Standard-Konfiguration angezeigt */
+    @FXML
+    void kurveLoeschen(ActionEvent event) {
+    	this.funktion = Optional.empty();
+		new KoordinatenSystem(
+				this.screen,
+				this.canvas,
+				konfiguration.orElseGet(() -> new Konfiguration.KonfigurationBuilder().build()))
+			.zeichnen();
+    }
+
+    /** Anwendung beenden */
 	@FXML
     void closeApplication(ActionEvent event) {
 		LOGGER.info("Anwendung wird beendet.");
@@ -132,12 +159,15 @@ public class Controller implements Initializable {
 		String kurve = ((MenuItem) event.getSource()).getText();
 		final var kurvendefinition = kurven.get(kurve);
 		LOGGER.trace("kurve={}", kurve);
-		if ( kurvendefinition != null )
+		if ( kurvendefinition != null ) {
 			new KoordinatenSystem(
 					this.screen,
 					this.canvas,
 					konfiguration.orElseGet(kurvendefinition::getKonfiguration))
 				.zeichnen(kurvendefinition.getFunction());
+			this.konfiguration = Optional.of(kurvendefinition.getKonfiguration());
+			this.funktion = Optional.of(kurvendefinition.getFunction());
+		}
 		else
 			alertShowAndWait(
 					INTERER_FEHLER,
