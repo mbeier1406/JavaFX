@@ -1,5 +1,7 @@
 package com.github.mbeier1406.javafx.graph;
 
+import static java.util.Objects.requireNonNull;
+
 import java.awt.Point;
 import java.text.DecimalFormat;
 import java.util.function.BiFunction;
@@ -60,13 +62,13 @@ public class KoordinatenSystem {
 
 	/**	Richtet das Koordinatensystem mit einer eigenen {@linkplain Konfiguration} ein */
 	public KoordinatenSystem(final Screen screen, final Canvas canvas, final Konfiguration konfiguration) {
-		this.konfiguration = konfiguration;
-		this.screen = screen;
+		this.konfiguration = requireNonNull(konfiguration, "konfiguration");
+		this.screen = requireNonNull(screen, "screen");;
 		this.screenWidth = this.screen.getVisualBounds().getWidth();
 		this.screenHeight = this.screen.getVisualBounds().getHeight();
 		this.viewWidth = screenWidth-screenWidth*0.005;
 		this.viewHeight = screenHeight-screenHeight*0.05;
-		this.canvas = canvas;
+		this.canvas = requireNonNull(canvas, "canvas");
 		this.canvas.setWidth(viewWidth);
 		this.canvas.setHeight(viewHeight);
 

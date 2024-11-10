@@ -38,23 +38,22 @@ public class KonfigurationController implements Initializable {
 
 	@FXML
 	void buttonKonfigurationLoeschenAktiviert(ActionEvent event) {
-		this.konfiguration = Optional.empty();
+		this.konfiguration = null;
 	}
 
 	@FXML
 	void buttonStandardKonfigurationAktiviert(ActionEvent event) {
-		this.konfiguration = Optional.of(new Konfiguration.KonfigurationBuilder().build());
+		this.konfiguration = new Konfiguration.KonfigurationBuilder().build();
 	}
 
 	@FXML
 	void buttonKonfigurationUebernehmenAktiviert(ActionEvent event) {
-		this.konfiguration = Optional.of(
-			new Konfiguration.KonfigurationBuilder()
+		this.konfiguration = new Konfiguration.KonfigurationBuilder()
 				.withXVon(Double.parseDouble(xAchseVonTextField.getText()))
 				.withXBis(Double.parseDouble(xAchseBisTextField.getText()))
 				.withYVon(Double.parseDouble(yAchseVonTextField.getText()))
 				.withYBis(Double.parseDouble(yAchseBisTextField.getText()))
-				.build());
+				.build();
 		((Stage) buttonAbbrechen.getScene().getWindow()).close();
 	}
 
@@ -85,23 +84,21 @@ public class KonfigurationController implements Initializable {
 
 
 	/** Die eigene {@linkplain Konfiguration} wenn gesetzt */
-	private Optional<Konfiguration> konfiguration = Optional.of(new Konfiguration.KonfigurationBuilder().build());
+	private Konfiguration konfiguration = new Konfiguration.KonfigurationBuilder().build();
 
 	/** Liefert die {@linkplain Konfiguration} für den Graphen an den {@linkplain Controller} geben */
 	public Optional<Konfiguration> getKonfiguration() {
-		return this.konfiguration;
+		return Optional.ofNullable(this.konfiguration);
 	}
 
 	/** Setzt die in {@linkplain Controller} verwendete {@linkplain Konfiguration} zur Bearbeitung */
 	public void setKonfiguration(final Optional<Konfiguration> konfiguration) {
-		this.konfiguration = konfiguration;
-		if ( konfiguration.isPresent() ) {
-			var k = konfiguration.get();
-			xAchseVonTextField.setText(String.valueOf(k.getxVon()));
-			xAchseBisTextField.setText(String.valueOf(k.getxBis()));
-			yAchseVonTextField.setText(String.valueOf(k.getyVon()));
-			yAchseBisTextField.setText(String.valueOf(k.getyBis()));
-		}
+		this.konfiguration = konfiguration.orElseGet(() -> new Konfiguration.KonfigurationBuilder().build());
+		var k = this.konfiguration;
+		xAchseVonTextField.setText(String.valueOf(k.getxVon()));
+		xAchseBisTextField.setText(String.valueOf(k.getxBis()));
+		yAchseVonTextField.setText(String.valueOf(k.getyVon()));
+		yAchseBisTextField.setText(String.valueOf(k.getyBis()));
 	}
 
 }

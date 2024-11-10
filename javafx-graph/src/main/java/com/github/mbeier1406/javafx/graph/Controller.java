@@ -62,13 +62,13 @@ public class Controller implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("Controller wird initialisiert: url={}; resouces={}", location, resources);
-		var konfiguration = new Konfiguration.KonfigurationBuilder()
+		this.konfiguration = Optional.of(new Konfiguration.KonfigurationBuilder()
 				.withXVon(-25)
 				.withXBis(400)
 				.withYVon(-1.5)
 				.withYBis(20)
-				.build();
-			new KoordinatenSystem(screen, this.canvas, konfiguration).zeichnen();
+				.build());
+		new KoordinatenSystem(screen, this.canvas, konfiguration.get()).zeichnen();
 	}
 
 	/** Anwendung beenden */
@@ -107,6 +107,9 @@ public class Controller implements Initializable {
 		stage.showAndWait();
 		stage.requestFocus();
     	this.konfiguration = konfigurationController.getKonfiguration();
+    	LOGGER.info("Neue Konfiguration: {}", this.konfiguration);
+    	if ( this.konfiguration.isPresent() )
+    		new KoordinatenSystem(this.screen, this.canvas, this.konfiguration.get()).zeichnen();
     }
 
 	/**
