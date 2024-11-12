@@ -13,7 +13,7 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.github.mbeier1406.javafx.base.viewer.Main"/>
-    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="JavaFX"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="javafx-base"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="javafx-base"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--module-path /home/mbeier/Eclipse/libs/javafx-sdk-23.0.1/lib --add-modules=javafx.controls,javafx.fxml"/>
