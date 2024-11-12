@@ -1,5 +1,8 @@
 package com.github.mbeier1406.javafx.graph;
 
+import static com.github.mbeier1406.javafx.graph.Commons.BENUTZER_FEHLER;
+import static com.github.mbeier1406.javafx.graph.Commons.alertShowAndWait;
+
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -48,13 +51,21 @@ public class KonfigurationController implements Initializable {
 
 	@FXML
 	void buttonKonfigurationUebernehmenAktiviert(ActionEvent event) {
-		this.konfiguration = new Konfiguration.KonfigurationBuilder()
-				.withXVon(Double.parseDouble(xAchseVonTextField.getText()))
-				.withXBis(Double.parseDouble(xAchseBisTextField.getText()))
-				.withYVon(Double.parseDouble(yAchseVonTextField.getText()))
-				.withYBis(Double.parseDouble(yAchseBisTextField.getText()))
-				.build();
-		((Stage) buttonAbbrechen.getScene().getWindow()).close();
+		try {
+			this.konfiguration = new Konfiguration.KonfigurationBuilder()
+					.withXVon(Double.parseDouble(xAchseVonTextField.getText()))
+					.withXBis(Double.parseDouble(xAchseBisTextField.getText()))
+					.withYVon(Double.parseDouble(yAchseVonTextField.getText()))
+					.withYBis(Double.parseDouble(yAchseBisTextField.getText()))
+					.build();
+			((Stage) buttonAbbrechen.getScene().getWindow()).close();
+		}
+		catch ( NumberFormatException e ) {
+			alertShowAndWait(
+					BENUTZER_FEHLER,
+					"Ungültige EIngabe!",
+					"Bitte korrekte Zahlen eingeben: '"+e.getLocalizedMessage()+"'");
+		}
 	}
 
 	@FXML

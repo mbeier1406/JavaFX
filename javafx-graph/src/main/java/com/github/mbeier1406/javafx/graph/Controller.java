@@ -78,13 +78,12 @@ public class Controller implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("Controller wird initialisiert: url={}; resouces={}", location, resources);
-		this.konfiguration = Optional.of(new Konfiguration.KonfigurationBuilder()
+		new KoordinatenSystem(screen, this.canvas, new Konfiguration.KonfigurationBuilder()
 				.withXVon(-25)
 				.withXBis(400)
 				.withYVon(-1.5)
 				.withYBis(20)
-				.build());
-		new KoordinatenSystem(screen, this.canvas, konfiguration.get()).zeichnen();
+				.build()).zeichnen();
 	}
 
 	/** Es wird wieder ein leeres Koordinatensystem mit der aktuellen oder Standard-Konfiguration angezeigt */
@@ -136,7 +135,7 @@ public class Controller implements Initializable {
     	this.konfiguration = konfigurationController.getKonfiguration();
     	LOGGER.info("Neue Konfiguration: {}", this.konfiguration);
     	if ( this.konfiguration.isPresent() )
-    		new KoordinatenSystem(this.screen, this.canvas, this.konfiguration.get()).zeichnen();
+    		new KoordinatenSystem(this.screen, this.canvas, this.konfiguration.get()).zeichnen(this.funktion.orElse(null));
     }
 
 	/**
