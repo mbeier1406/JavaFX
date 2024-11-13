@@ -125,7 +125,7 @@ public class Controller implements Initializable {
 			return;
 		}
 		var konfigurationController = (KonfigurationController) fxmlLoader.getController();
-		konfigurationController.setKonfiguration(konfiguration);
+		konfigurationController.setKonfiguration(this.konfiguration);
 		Scene scene = new Scene(fxmlLoader.getRoot());
 		Stage stage = new Stage();
 		stage.setTitle("Konfiguration definieren");

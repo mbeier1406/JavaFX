@@ -1,5 +1,7 @@
 package com.github.mbeier1406.javafx.graph;
 
+import static com.github.mbeier1406.javafx.graph.Commons.BENUTZER_FEHLER;
+import static com.github.mbeier1406.javafx.graph.Commons.alertShowAndWait;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.Point;
@@ -138,17 +140,26 @@ public class KoordinatenSystem {
 				this.konfiguration.getDecimalFormat());
 
 		if ( f != null ) { // wenn eine Funktion gezeichnet werden soll
-			double X = this.konfiguration.getxStart();
-			double Y = f.apply(X);
-			double XNeu = X;
-			while ( XNeu+this.konfiguration.getxDelta() < this.konfiguration.getxBis() ) {
-				XNeu += this.konfiguration.getxDelta();
-				double YNeu = f.apply(XNeu);
-				Point von = modelToView(X, Y);
-				Point bis = modelToView(XNeu, YNeu);
-				gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
-				X = XNeu;
-				Y = YNeu;
+			try {
+				double X = this.konfiguration.getxStart();
+				double Y = f.apply(X);
+				double XNeu = X;
+				while ( XNeu+this.konfiguration.getxDelta() < this.konfiguration.getxBis() ) {
+					XNeu += this.konfiguration.getxDelta();
+					double YNeu = f.apply(XNeu);
+					Point von = modelToView(X, Y);
+					Point bis = modelToView(XNeu, YNeu);
+					gc.strokeLine(von.getX(), von.getY(), bis.getX(), bis.getY());
+					X = XNeu;
+					Y = YNeu;
+				}
+			}
+			catch ( IllegalArgumentException e ) {
+				alertShowAndWait(
+						BENUTZER_FEHLER,
+						"Fehlerhafte Kurvenkonfiguration!",
+						"Fehlertext: "+e.getLocalizedMessage());
+				throw e;
 			}
 		}
 	}

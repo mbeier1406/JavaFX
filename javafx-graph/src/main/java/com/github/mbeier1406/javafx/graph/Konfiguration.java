@@ -138,6 +138,9 @@ public class Konfiguration {
 	}
 	public static class KonfigurationBuilder {
 		private Konfiguration konfiguration;
+		public KonfigurationBuilder(final Konfiguration konfiguration) {
+			this.konfiguration = konfiguration;
+		}
 		public KonfigurationBuilder() {
 			this.konfiguration = new Konfiguration();
 		}
@@ -174,6 +177,11 @@ public class Konfiguration {
 		/** Ende der Y-Achse setzen */
 		public KonfigurationBuilder withYBis(double yBis) {
 			this.konfiguration.setyBis(yBis);
+			return this;
+		}
+		/** Linienstärke des Graphen */
+		public KonfigurationBuilder withLineWidth(double lineWidth) {
+			this.konfiguration.setLineWidth(lineWidth);
 			return this;
 		}
 		/** Hintergrundfarbe des Graphen setzen */
